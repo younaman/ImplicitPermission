@@ -7,6 +7,7 @@ import (
 	"go/token"
 	"go/types"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -19,6 +20,7 @@ import (
 // "golang.org/x/tools/go/pointer"
 var (
 	whiteList    = []string{"*k8s.io", "k8s.io"}
+	allPackages  []*packages.Package
 	resources    = []node{}
 	resourcesSet = map[string][]node{}
 	resourceMap  = map[string]*types.Struct{}
@@ -52,17 +54,14 @@ func loadAllDeps(initial []*packages.Package, visited map[string]*packages.Packa
 }
 
 func buildSSA(fset *token.FileSet, visited map[string]*packages.Package) *ssa.Program {
-	// 创建一个新的 SSA 程序
 	prog := ssa.NewProgram(fset, ssa.BuilderMode(0))
 
-	// 首先为所有导入的包创建 SSA 包
 	ssaPkgs := make(map[*packages.Package]*ssa.Package)
 	for _, pkg := range visited {
 		ssaPkg := prog.CreatePackage(pkg.Types, pkg.Syntax, pkg.TypesInfo, false)
 		ssaPkgs[pkg] = ssaPkg
 	}
 
-	// 确保所有包都建立了 SSA 形式
 	for _, ssaPkg := range ssaPkgs {
 		ssaPkg.Build()
 	}
@@ -84,59 +83,6 @@ func parseAndTypeCheck(filename string) (*ast.File, *types.Package, error) {
 	return pkgs[0].Syntax[0], pkgs[0].Types, nil
 }
 
-func findStructsInAddKnownTypes(file *ast.File, allPackages map[string]*packages.Package) {
-	ast.Inspect(file, func(n ast.Node) bool {
-		if callExpr, ok := n.(*ast.CallExpr); ok {
-			if ident, ok := callExpr.Fun.(*ast.SelectorExpr); ok && ident.Sel.Name == "AddKnownTypes" {
-				for _, arg := range callExpr.Args {
-					if unaryExpr, ok := arg.(*ast.UnaryExpr); ok {
-						switch expr := unaryExpr.X.(*ast.CompositeLit).Type.(type) {
-						case *ast.Ident:
-							lookupAndAddStruct(expr.Name, "", allPackages)
-							if _, ok := registerApi[expr.Name]; !ok {
-								registerApi[expr.Name] = expr.Name
-							}
-						case *ast.SelectorExpr:
-							pkgName := expr.X.(*ast.Ident).Name
-							fieldName := expr.Sel.Name
-							lookupAndAddStruct(fieldName, pkgName, allPackages)
-							if _, ok := registerApi[fieldName]; !ok {
-								registerApi[fieldName] = fieldName
-							}
-						}
-					}
-				}
-			}
-		}
-		return true
-	})
-}
-func lookupAndAddStruct(name, pkgName string, allPackages map[string]*packages.Package) {
-	// if strings.HasSuffix(name, "List") {
-	// 	return
-	// }
-	for _, p := range allPackages {
-		if pkgName == "" || p.PkgPath == pkgName || strings.HasSuffix(p.PkgPath, pkgName) || true {
-			if obj := p.Types.Scope().Lookup(name); obj != nil {
-				if typeName, ok := obj.Type().Underlying().(*types.Named); ok {
-					if structType, ok := typeName.Underlying().(*types.Struct); ok {
-						if strings.HasPrefix(obj.Pkg().Path(), "k8s") { //&& (hasTypeMeta(structType) && hasObjectMeta(structType))
-							resourcesSet[name] = []node{node{resource: ResourceInfo{fullName: obj.Pkg().Path() + "." + name, typeStruct: structType}}}
-							//resourceMap[obj.Pkg().Path()+"."+name] = structType
-						}
-					}
-				} else if structType, ok := obj.Type().Underlying().(*types.Struct); ok {
-					if strings.HasPrefix(obj.Pkg().Path(), "k8s") { //&& hasTypeMeta(structType) && hasObjectMeta(structType)
-						resourcesSet[name] = []node{node{resource: ResourceInfo{fullName: obj.Pkg().Path() + "." + name, typeStruct: structType}}}
-						//resourceMap[obj.Pkg().Path()+"."+name] = structType
-					}
-					//fmt.Println(structType)
-				}
-			}
-		}
-	}
-}
-
 func hasTypeMeta(structType *types.Struct) bool {
 	for i := 0; i < structType.NumFields(); i++ {
 		field := structType.Field(i)
@@ -156,7 +102,6 @@ func hasObjectMeta(structType *types.Struct) bool {
 	return false
 }
 
-// printStructFields 打印结构体的字段。
 func printStructFields(structType *types.Struct) {
 	for i := 0; i < structType.NumFields(); i++ {
 		field := structType.Field(i)
@@ -192,20 +137,65 @@ func processDirectory(rootDir string) error {
 	}
 	return nil
 }
-func run() (interface{}, error) {
-	//filename := "/root/codes/go/k8s/kubernetes/"
-	cfg := &packages.Config{
-		Mode:  packages.LoadAllSyntax,
-		Tests: false,
-		Dir:   "/root/codes/go/k8s/kubernetes", //k8s源码的本地路径
-		//Dir: "/root/go/src/xavier/test",
-	}
-	initial, _ := packages.Load(cfg, "./...")
-	allPackages := make(map[string]*packages.Package)
+func getSubDirs(root string) ([]string, error) {
+	var subDirs []string
 
-	//allPackages := make(map[string]*packages.Package)
-	loadAllDeps(initial, allPackages)
-	analyze(allPackages)
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			subDirs = append(subDirs, filepath.Join(root, entry.Name()))
+		}
+	}
+
+	return subDirs, nil
+}
+func loadPackagesRecursive(dir string) error {
+	// if !strings.Contains(dir, "registry") || !strings.Contains(dir, "vendor") {
+	// 	return nil
+	// }
+	cfg := &packages.Config{
+		Mode: packages.LoadSyntax,
+		Dir:  dir,
+	}
+
+	// Load all packages in the root directory and its subdirectories
+	pkgs, err := packages.Load(cfg, "./...")
+	if err != nil {
+		return err
+	}
+	for _, pkg := range pkgs {
+		allPackages = append(allPackages, pkg)
+	}
+	subdirs, err := getSubDirs(dir)
+	if len(subdirs) == 0 {
+		return nil
+	}
+	for _, dir1 := range subdirs {
+		loadPackagesRecursive(dir1)
+	}
+	return nil
+}
+func run() (interface{}, error) {
+	resultFile := os.Args[2]
+	file, err := os.OpenFile(resultFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return nil, nil
+	}
+	defer file.Close()
+	os.Stdout = file
+	rootDir := os.Args[1]
+	//rootDir := "D:\\Code\\Go\\src\\k8s\\kubernetes\\staging\\src\\k8s.io"
+	//filename := "/root/codes/go/k8s/kubernetes/"
+	err = loadPackagesRecursive(rootDir)
+	if err != nil {
+		fmt.Println(err)
+	}
+	analyze()
 	for k, v := range res {
 		fmt.Println(k)
 		for subRes, _ := range v {
@@ -219,7 +209,7 @@ func main() {
 	run()
 }
 
-func analyze(allPackages map[string]*packages.Package) {
+func analyze() {
 	for _, pkg := range allPackages {
 		for _, file := range pkg.Syntax {
 			for _, decl := range file.Decls {
@@ -257,9 +247,7 @@ func findRes(funcDecl *ast.FuncDecl) {
 				continue
 			}
 			ast.Inspect(ifStmt.Body, func(n ast.Node) bool {
-				// 查找所有的索引表达式
 				if expr, ok := n.(*ast.IndexExpr); ok {
-					// 检查表达式是否为二元表达式，且右边是基本字面量
 					if binaryExpr, ok := expr.Index.(*ast.BinaryExpr); ok && binaryExpr.Op == token.ADD {
 						if basicLit, ok := binaryExpr.Y.(*ast.BasicLit); ok && basicLit.Kind == token.STRING {
 							subRes := strings.Trim(basicLit.Value, "\"")

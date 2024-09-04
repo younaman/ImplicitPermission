@@ -86,14 +86,16 @@ func getSubDirs(root string) ([]string, error) {
 }
 
 func run() (interface{}, error) {
-	file, err := os.OpenFile("vendor.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	resultFile := os.Args[2]
+	file, err := os.OpenFile(resultFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return nil, nil
 	}
 	defer file.Close()
 	os.Stdout = file
-	rootDir := "/root/codes/go/k8s/kubernetes/pkg/registry" //"/root/codes/go/k8s/kubernetes/staging/src/k8s.io"
+	rootDir := os.Args[1]
+	//rootDir := "/root/codes/go/k8s/kubernetes/pkg/registry" //"/root/codes/go/k8s/kubernetes/staging/src/k8s.io"
 	err = loadPackagesRecursive(rootDir)
 	if err != nil {
 		fmt.Println(err)
