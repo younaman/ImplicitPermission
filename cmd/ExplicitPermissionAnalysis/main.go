@@ -156,7 +156,6 @@ func findRes(funcDecl *ast.FuncDecl, pkg *packages.Package) {
 				continue
 			}
 			ast.Inspect(ifStmt.Body, func(n ast.Node) bool {
-				// 查找赋值语句
 				if assignStmt, ok := n.(*ast.AssignStmt); ok {
 					subResource := ""
 					for _, lhs := range assignStmt.Lhs {
@@ -216,7 +215,7 @@ func findRes(funcDecl *ast.FuncDecl, pkg *packages.Package) {
 						// }
 						//fmt.Println(reflect.TypeOf(expr))
 						// ast.Inspect(expr, func(n ast.Node) bool {
-						// 	// 查找标识符
+						// 
 						// 	if ident, ok := n.(*ast.Ident); ok {
 						// 		// if strings.Contains(ident.Name, "C2") {
 						// 		// 	fmt.Println(ident.Obj)
@@ -253,7 +252,7 @@ func printMethods(typ types.Type) []string {
 				//fmt.Println(methodName)
 			}
 		}
-		if methodName == "Connect" { //如果存在Connect方法，则通过ConnectMethods方法来获取真实verbs
+		if methodName == "Connect" {
 			sName := typ.String()[strings.LastIndex(typ.String(), ".")+1:]
 			//fmt.Println(sName)
 			verbs := findVerbs(sName)
@@ -333,10 +332,8 @@ func findVar() {
 	for _, pkg := range RegistryPkgs {
 		for _, file := range pkg.Syntax {
 			ast.Inspect(file, func(n ast.Node) bool {
-				// 查找变量声明
 				if decl, ok := n.(*ast.GenDecl); ok && decl.Tok == token.VAR {
-					// 检查是否为全局变量
-					if decl.Lparen == token.NoPos { // 通常全局变量没有括号
+					if decl.Lparen == token.NoPos { 
 						for _, spec := range decl.Specs {
 							if vspec, ok := spec.(*ast.ValueSpec); ok {
 								for i, name := range vspec.Names {
@@ -359,18 +356,15 @@ func exprToString(expr ast.Expr) string {
 	case *ast.BasicLit:
 		return e.Value
 	case *ast.CompositeLit:
-		// 处理复合字面值，如数组
 		if len(e.Elts) > 0 {
 			var values []string
 			for _, elt := range e.Elts {
 				values = append(values, exprToString(elt))
 			}
-			// 将数组元素连接成一个字符串
 			return "{" + strings.Join(values, ", ") + "}"
 		}
 		return "empty composite literal"
 	default:
-		// 更复杂的表达式可能需要递归处理或特殊逻辑
 		return "???"
 	}
 }
