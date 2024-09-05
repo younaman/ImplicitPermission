@@ -1,5 +1,5 @@
-`create PersistentVolumeClaim` --> `create PersistentVolume` (如果启用了动态供应)
-`delete PersistentVolumeClaim` --> `delete PersistentVolume` (如果设置了回收策略为删除)
+`create PersistentVolumeClaim` --> `create PersistentVolume` 
+`delete PersistentVolumeClaim` --> `delete PersistentVolume` 
 `update PersistentVolumeClaim` --> `update PersistentVolume`
 `patch PersistentVolumeClaim` --> `update PersistentVolume`
 `create Ingress` --> `get Service`
@@ -8,10 +8,10 @@
 `update Ingress` --> `get Secret`
 `patch Ingress` --> `get Service`
 `patch Ingress` --> `get Secret`
-`create VolumeAttachment` --> `update PersistentVolume` (状态更新)
-`delete VolumeAttachment` --> `update PersistentVolume` (状态更新)
-`update VolumeAttachment` --> `update PersistentVolume` (状态更新)
-`patch VolumeAttachment` --> `update PersistentVolume` (状态更新)
+`create VolumeAttachment` --> `update PersistentVolume` 
+`delete VolumeAttachment` --> `update PersistentVolume` 
+`update VolumeAttachment` --> `update PersistentVolume` 
+`patch VolumeAttachment` --> `update PersistentVolume` 
 `create ReplicationController` --> `create Pod`
 `delete ReplicationController` --> `delete Pod`
 `delete CustomResourceDefinition` --> `delete CR`
@@ -34,10 +34,10 @@
 `create ReplicaSet` --> `create Pod`
 `delete ReplicaSet` --> `delete Pod`
 `create ClusterRoleBinding` --> `bind ClusterRole`
-`update nodes` --> `重新调度 Pod`
-`patch nodes` --> `重新调度 Pod`
-`delete nodes` --> `重新调度 Pod`
-`deletecollection nodes` --> `重新调度 Pod`
+`update nodes` --> `reschedule Pod`
+`patch nodes` --> `reschedule Pod`
+`delete nodes` --> `reschedule Pod`
+`deletecollection nodes` --> `reschedule Pod`
 `create DaemonSet` --> `create Pod`
 `delete DaemonSet` --> `delete Pod`
 `deletecollection DaemonSet` --> `delete Pod`
@@ -60,9 +60,9 @@
 `create Pod` --> `get Node`
 `update Pod` --> `get PersistentVolumeClaim`
 `patch Pod` --> `get PersistentVolumeClaim`
-`create APIService` --> `create Service` (如果指定了 spec.service)
-`update APIService` --> `update Service` (如果更新了 spec.service)
-`patch APIService` --> `patch Service` (如果更新了 spec.service)
+`create APIService` --> `create Service` 
+`update APIService` --> `update Service` 
+`patch APIService` --> `patch Service` 
 `delete ValidatingWebhookConfiguration` --> `bypass the validating`
 `update ValidatingWebhookConfiguration` --> `get Res`
 `patch ValidatingWebhookConfiguration` --> `get Res`

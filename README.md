@@ -15,7 +15,10 @@ For the Resource Identification section, run the run.bat script in the ResourceI
 
 This static analysis tool, based on the unified characteristics during the registration of Kubernetes resources, achieves automated collection of all resources within Kubernetes. The result will yield a list of all primary and secondary resources in Kubernetes.
 
+<<<<<<< HEAD
 The results will be output to the files: registry.txt and vendor.txt(The sum of the contents of these two files will be the final analysis result.).
+=======
+>>>>>>> 8943d06d058802711d54dec9080445c8c89464c7
 Below is an example of the running results.<br/>
 ![Resource](./img/e1.png)
 
@@ -24,6 +27,11 @@ For the Explicit Permission Analysis section, execute the run.bat script in the 
 
 This static analysis tool, based on the method definitions of storage objects corresponding to resources in Kubernetes, achieves automated collection of explicit permissions associated with all resources in Kubernetes. The outcome will provide a list of explicit permissions corresponding to resources (including primary and secondary resources) in Kubernetes.
 
+<<<<<<< HEAD
 The results will be output to the files: registry.txt and vendor.txt(The sum of the contents of these two files will be the final analysis result).
 Below is an example of the running results.<br/>
 ![Permission](./img/e2.png)
+=======
+Below is an example of the running results.<br/>
+![Permission](./img/e2.png)
+>>>>>>> 8943d06d058802711d54dec9080445c8c89464c7
