@@ -1,0 +1,112 @@
+roles
+resourceclaimtemplates
+csinodes
+resourceclaims
+- /status
+volumeattachments
+- /status
+csidrivers
+deployments
+- /status
+- /scale
+resourcequotas
+- /status
+prioritylevelconfigurations
+- /status
+clusterroles
+validatingadmissionpolicybindings
+nodes
+- /proxy
+- /status
+configmaps
+resourceclassparameters
+horizontalpodautoscalers
+- /status
+persistentvolumeclaims
+- /status
+runtimeclasses
+resourceslices
+services
+- /proxy
+- /status
+persistentvolumes
+- /status
+daemonsets
+- /status
+subjectaccessreviews
+bindings
+replicationcontrollers
+- /status
+- /scale
+podtemplates
+endpointslices
+flowschemas
+- /status
+priorityclasses
+statefulsets
+- /status
+- /scale
+tokenreviews
+localsubjectaccessreviews
+jobs
+- /status
+validatingwebhookconfigurations
+controllerrevisions
+limitranges
+volumeattributesclasses
+servicecidrs
+- /status
+resourceclaimparameters
+csistoragecapacities
+storageversions
+- /status
+endpoints
+namespaces
+- /status
+- /finalize
+ipaddresses
+certificatesigningrequests
+- /approval
+- /status
+ingresses
+- /status
+ingressclasses
+storageclasses
+rolebindings
+podschedulingcontexts
+- /status
+selfsubjectreviews
+selfsubjectaccessreviews
+leases
+secrets
+clustertrustbundles
+pods
+- /status
+- /ephemeralcontainers
+- /eviction
+- /attach
+- /log
+- /exec
+- /portforward
+- /proxy
+- /binding
+networkpolicies
+storageversionmigrations
+- /status
+componentstatuses
+events
+clusterrolebindings
+mutatingwebhookconfigurations
+validatingadmissionpolicies
+- /status
+replicasets
+- /status
+- /scale
+selfsubjectrulesreviews
+resourceclasses
+cronjobs
+- /status
+serviceaccounts
+- /token
+poddisruptionbudgets
+- /status

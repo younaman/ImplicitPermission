@@ -1,0 +1,4 @@
+apiservices/status [Get Update Patch]
+customresourcedefinitions [Create Delete DeleteCollection Get List Update Watch Patch]
+customresourcedefinitions/status [Get Update Patch]
+apiservices [Create Delete DeleteCollection Get List Update Watch Patch]

@@ -1,0 +1,4 @@
+apiservices
+- /status
+customresourcedefinitions
+- /status
