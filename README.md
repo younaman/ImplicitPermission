@@ -69,13 +69,13 @@ Environmental requirements are as follows:
 First, pull the container.
 
 ```bash
-root@instance:/# docker pull younaman/ri:v2
+root@instance:/# docker pull <anonymous_or_placeholder>/ri:v2
 ```
 
 Second, start the container.
 
 ```bash
-root@instance:/# docker run -it younaman/ri:v2 bash
+root@instance:/# docker run -it <anonymous_or_placeholder>/ri:v2 bash
 ```
 
 Then, in the container, run the tool. (Please note that it is **start.sh** that is executed here, not **start2.sh**.)
@@ -166,13 +166,13 @@ Environmental requirements are as follows:
 First, pull the container.
 
 ```bash
-root@instance:/# docker pull younaman/ea:v2
+root@instance:/# docker pull <anonymous_or_placeholder>/ea:v2
 ```
 
 Second, start the container.
 
 ```bash
-root@instance:/# docker run -it younaman/ea:v2 bash
+root@instance:/# docker run -it <anonymous_or_placeholder>/ea:v2 bash
 ```
 
 Then, in the container, run the tool. (Please note that it is **start.sh** that is executed here, not **start2.sh**.)
@@ -386,13 +386,13 @@ Environmental requirements are as follows:
 First, pull the container.
 
 ```bash
-root@instance:/# docker pull younaman/sa:v4
+root@instance:/# docker pull <anonymous_or_placeholder>/sa:v4
 ```
 
 Second, start the container.
 
 ```bash
-root@instance:/# docker run -it younaman/sa:v4 bash
+root@instance:/# docker run -it <anonymous_or_placeholder>/sa:v4 bash
 ```
 
 Then, in the container, run the tool.
