@@ -1,0 +1,326 @@
+create apiservices --> get services
+create apiservices --> watch services
+update apiservices --> get services
+update apiservices --> watch services
+patch apiservices --> get services
+patch apiservices --> watch services
+update apiservices/status --> update apiservices
+patch apiservices/status --> patch apiservices
+update certificatesigningrequests/approval --> update certificatesigningrequests
+patch certificatesigningrequests/approval --> patch certificatesigningrequests
+get certificatesigningrequests/approval --> get certificatesigningrequests
+update certificatesigningrequests/status --> update certificatesigningrequests
+patch certificatesigningrequests/status --> patch certificatesigningrequests
+create clusterrolebindings --> * *
+update clusterrolebindings --> * *
+patch clusterrolebindings --> * *
+create cronjobs --> create jobs
+update cronjobs --> create jobs
+update cronjobs --> delete jobs
+delete cronjobs --> delete jobs
+deletecollection cronjobs --> delete jobs
+patch cronjobs --> patch jobs
+patch cronjobs --> create jobs
+patch cronjobs --> delete jobs
+update cronjobs --> update jobs
+update cronjobs/status --> update cronjobs
+patch cronjobs/status --> patch cronjobs
+create customresourcedefinitions --> create customresources
+delete customresourcedefinitions --> delete customresources
+deletecollection customresourcedefinitions --> delete customresources
+update customresourcedefinitions --> update customresources
+patch customresourcedefinitions --> patch customresources
+update customresourcedefinitions/status --> update customresourcedefinitions
+patch customresourcedefinitions/status --> patch customresourcedefinitions
+create daemonsets --> create controllerrevisions
+update daemonsets --> create controllerrevisions
+update daemonsets --> delete controllerrevisions
+delete daemonsets --> delete controllerrevisions
+create daemonsets --> create pods
+update daemonsets --> create pods
+update daemonsets --> delete pods
+delete daemonsets --> delete pods
+update daemonsets --> patch pods
+deletecollection daemonsets --> delete pods
+update daemonsets --> update pods
+patch daemonsets --> patch pods
+patch daemonsets --> create pods
+patch daemonsets --> delete pods
+update daemonsets/status --> update daemonsets
+patch daemonsets/status --> patch daemonsets
+create deployments --> create replicasets
+update deployments --> create replicasets
+update deployments --> update replicasets
+delete deployments --> delete replicasets
+update deployments --> patch replicasets
+create deployments --> create pods
+delete deployments --> delete pods
+update deployments --> create pods
+update deployments --> delete pods
+update deployments --> update pods
+patch deployments --> patch pods
+patch deployments --> create pods
+patch deployments --> delete pods
+deletecollection deployments --> delete pods
+update deployments/scale --> create pods
+update deployments/scale --> delete pods
+patch deployments/scale --> create pods
+patch deployments/scale --> delete pods
+update deployments/status --> update deployments
+patch deployments/status --> patch deployments
+create flowschemas --> get prioritylevelconfigurations
+update flowschemas --> get prioritylevelconfigurations
+patch flowschemas --> get prioritylevelconfigurations
+update flowschemas/status --> update flowschemas
+patch flowschemas/status --> patch flowschemas
+create horizontalpodautoscalers --> patch deployments
+create horizontalpodautoscalers --> patch statefulsets
+create horizontalpodautoscalers --> patch replicasets
+create horizontalpodautoscalers --> patch replicationcontrollers
+update horizontalpodautoscalers --> patch deployments
+update horizontalpodautoscalers --> patch statefulsets
+update horizontalpodautoscalers --> patch replicasets
+update horizontalpodautoscalers --> patch replicationcontrollers
+patch horizontalpodautoscalers --> patch deployments
+patch horizontalpodautoscalers --> patch statefulsets
+patch horizontalpodautoscalers --> patch replicasets
+patch horizontalpodautoscalers --> patch replicationcontrollers
+update horizontalpodautoscalers/status --> update horizontalpodautoscalers
+get horizontalpodautoscalers/status --> get horizontalpodautoscalers
+patch horizontalpodautoscalers/status --> patch horizontalpodautoscalers
+update ingresses/status --> update ingresses
+get ingresses/status --> get ingresses
+patch ingresses/status --> patch ingresses
+create jobs --> create pods
+delete jobs --> delete pods
+deletecollection jobs --> delete pods
+update jobs/status --> update jobs
+get jobs/status --> get jobs
+patch jobs/status --> patch jobs
+create mutatingwebhookconfigurations --> create admissionreviews
+update mutatingwebhookconfigurations --> create admissionreviews
+patch mutatingwebhookconfigurations --> create admissionreviews
+create namespaces --> create serviceaccounts
+create namespaces --> create configmaps
+delete namespaces --> delete pods
+delete namespaces --> delete deployments
+delete namespaces --> delete statefulsets
+delete namespaces --> delete daemonsets
+delete namespaces --> delete jobs
+delete namespaces --> delete cronjobs
+delete namespaces --> delete services
+delete namespaces --> delete configmaps
+delete namespaces --> delete secrets
+delete namespaces --> delete persistentvolumeclaims
+delete namespaces --> delete replicasets
+delete namespaces --> delete replicationcontrollers
+delete namespaces --> delete ingresses
+delete namespaces --> delete networkpolicies
+delete namespaces --> delete roles
+delete namespaces --> delete rolebindings
+delete namespaces --> delete serviceaccounts
+delete namespaces --> delete limitranges
+delete namespaces --> delete resourcequotas
+delete namespaces --> delete events
+delete namespaces --> delete endpoints
+delete namespaces --> delete horizontalpodautoscalers
+delete namespaces --> delete poddisruptionbudgets
+delete namespaces --> delete leases
+delete namespaces --> delete controllerrevisions
+update namespaces/finalize --> update namespaces
+update namespaces/finalize --> delete namespaces
+update namespaces/status --> update namespaces
+patch namespaces/status --> patch namespaces
+update nodes --> delete pods
+delete nodes --> delete pods
+patch nodes --> delete pods
+update nodes/status --> update nodes
+patch nodes/status --> patch nodes
+update persistentvolumeclaims/status --> update persistentvolumeclaims
+get persistentvolumeclaims/status --> get persistentvolumeclaims
+patch persistentvolumeclaims/status --> patch persistentvolumeclaims
+update persistentvolumes/status --> update persistentvolumes
+patch persistentvolumes/status --> patch persistentvolumes
+update poddisruptionbudgets/status --> update poddisruptionbudgets
+patch poddisruptionbudgets/status --> patch poddisruptionbudgets
+get poddisruptionbudgets/status --> get poddisruptionbudgets
+create pods --> create podschedulingcontexts
+create pods --> get nodes
+create pods --> get persistentvolumeclaims
+create pods --> get serviceaccounts
+create pods --> get secrets
+create pods --> get configmaps
+create pods --> get namespaces
+update pods --> get secrets
+update pods --> get configmaps
+patch pods --> get secrets
+patch pods --> get configmaps
+update pods/ephemeralcontainers --> update pods
+get pods/ephemeralcontainers --> get pods
+patch pods/ephemeralcontainers --> patch pods
+create pods/eviction --> delete pods
+create pods/exec --> get secrets
+update pods/status --> update pods
+get pods/status --> get pods
+patch pods/status --> patch pods
+update podschedulingcontexts/status --> update podschedulingcontexts
+get podschedulingcontexts/status --> get podschedulingcontexts
+patch podschedulingcontexts/status --> patch podschedulingcontexts
+update prioritylevelconfigurations/status --> update prioritylevelconfigurations
+patch prioritylevelconfigurations/status --> patch prioritylevelconfigurations
+get prioritylevelconfigurations/status --> get prioritylevelconfigurations
+create replicasets --> create pods
+update replicasets --> create pods
+update replicasets --> delete pods
+delete replicasets --> delete pods
+update replicasets --> patch pods
+deletecollection replicasets --> delete pods
+update replicasets --> update pods
+patch replicasets --> create pods
+patch replicasets --> delete pods
+patch replicasets --> update pods
+update replicasets/scale --> create pods
+update replicasets/scale --> delete pods
+patch replicasets/scale --> create pods
+patch replicasets/scale --> delete pods
+update replicasets/status --> update replicasets
+get replicasets/status --> get replicasets
+patch replicasets/status --> patch replicasets
+create replicationcontrollers --> create pods
+delete replicationcontrollers --> delete pods
+update replicationcontrollers --> create pods
+update replicationcontrollers --> delete pods
+update replicationcontrollers --> patch pods
+deletecollection replicationcontrollers --> delete pods
+patch replicationcontrollers --> create pods
+patch replicationcontrollers --> delete pods
+patch replicationcontrollers --> patch pods
+update replicationcontrollers/scale --> create pods
+update replicationcontrollers/scale --> delete pods
+patch replicationcontrollers/scale --> create pods
+patch replicationcontrollers/scale --> delete pods
+update replicationcontrollers/status --> update replicationcontrollers
+patch replicationcontrollers/status --> patch replicationcontrollers
+get replicationcontrollers/status --> get replicationcontrollers
+update resourceclaims/status --> update resourceclaims
+patch resourceclaims/status --> patch resourceclaims
+create resourcequotas --> deny create pods
+create resourcequotas --> deny create deployments
+create resourcequotas --> deny create statefulsets
+create resourcequotas --> deny create daemonsets
+create resourcequotas --> deny create jobs
+create resourcequotas --> deny create cronjobs
+create resourcequotas --> deny create persistentvolumeclaims
+create resourcequotas --> deny create replicasets
+create resourcequotas --> deny create replicationcontrollers
+create resourcequotas --> deny create secrets
+create resourcequotas --> deny create configmaps
+update resourcequotas --> deny create pods
+update resourcequotas --> deny create deployments
+update resourcequotas --> deny create statefulsets
+update resourcequotas --> deny create daemonsets
+update resourcequotas --> deny create jobs
+update resourcequotas --> deny create cronjobs
+update resourcequotas --> deny create persistentvolumeclaims
+update resourcequotas --> deny create replicasets
+update resourcequotas --> deny create replicationcontrollers
+update resourcequotas --> deny create secrets
+update resourcequotas --> deny create configmaps
+patch resourcequotas --> deny create pods
+patch resourcequotas --> deny create deployments
+patch resourcequotas --> deny create statefulsets
+patch resourcequotas --> deny create daemonsets
+patch resourcequotas --> deny create jobs
+patch resourcequotas --> deny create cronjobs
+patch resourcequotas --> deny create persistentvolumeclaims
+patch resourcequotas --> deny create replicasets
+patch resourcequotas --> deny create replicationcontrollers
+patch resourcequotas --> deny create secrets
+patch resourcequotas --> deny create configmaps
+update resourcequotas/status --> update resourcequotas
+patch resourcequotas/status --> patch resourcequotas
+create rolebindings --> bind roles
+update rolebindings --> bind roles
+patch rolebindings --> bind roles
+update secrets --> update pods
+patch secrets --> patch pods
+patch secrets --> patch deployments
+patch secrets --> patch statefulsets
+patch secrets --> patch daemonsets
+patch secrets --> patch jobs
+patch secrets --> patch cronjobs
+patch secrets --> patch serviceaccounts
+patch secrets --> patch ingresses
+patch secrets --> patch persistentvolumes
+delete serviceaccounts --> delete secrets
+deletecollection serviceaccounts --> delete secrets
+create serviceaccounts/token --> get serviceaccounts
+update servicecidrs/status --> update servicecidrs
+patch servicecidrs/status --> patch servicecidrs
+get servicecidrs/status --> get servicecidrs
+create services --> create endpointslices
+update services --> update endpointslices
+delete services --> delete endpointslices
+create services --> create endpoints
+delete services --> delete endpoints
+update services --> update endpoints
+patch services --> patch endpointslices
+patch services --> patch endpoints
+deletecollection services --> delete endpointslices
+deletecollection services --> delete endpoints
+update services/status --> update services
+patch services/status --> patch services
+create statefulsets --> create controllerrevisions
+delete statefulsets --> delete controllerrevisions
+update statefulsets --> create controllerrevisions
+update statefulsets --> delete controllerrevisions
+create statefulsets --> create pods
+update statefulsets --> create pods
+update statefulsets --> delete pods
+delete statefulsets --> delete pods
+update statefulsets --> patch pods
+create statefulsets --> create persistentvolumeclaims
+delete statefulsets --> delete persistentvolumeclaims
+deletecollection statefulsets --> delete pods
+deletecollection statefulsets --> delete persistentvolumeclaims
+patch statefulsets --> patch pods
+patch statefulsets --> create pods
+patch statefulsets --> delete pods
+update statefulsets --> update pods
+update statefulsets/scale --> create pods
+update statefulsets/scale --> delete pods
+patch statefulsets/scale --> create pods
+patch statefulsets/scale --> delete pods
+update statefulsets/status --> update statefulsets
+get statefulsets/status --> get statefulsets
+patch statefulsets/status --> patch statefulsets
+create storageclasses --> create persistentvolumes
+update storageversions/status --> update storageversions
+get storageversions/status --> get storageversions
+patch storageversions/status --> patch storageversions
+create validatingadmissionpolicies --> deny create [any kubernetes api resource]
+create validatingadmissionpolicies --> deny update [any kubernetes api resource]
+create validatingadmissionpolicies --> deny patch [any kubernetes api resource]
+create validatingadmissionpolicies --> deny delete [any kubernetes api resource]
+update validatingadmissionpolicies --> deny create [any kubernetes api resource]
+update validatingadmissionpolicies --> deny update [any kubernetes api resource]
+update validatingadmissionpolicies --> deny patch [any kubernetes api resource]
+update validatingadmissionpolicies --> deny delete [any kubernetes api resource]
+patch validatingadmissionpolicies --> deny create [any kubernetes api resource]
+patch validatingadmissionpolicies --> deny update [any kubernetes api resource]
+patch validatingadmissionpolicies --> deny patch [any kubernetes api resource]
+patch validatingadmissionpolicies --> deny delete [any kubernetes api resource]
+delete validatingadmissionpolicies --> allow create [any kubernetes api resource]
+delete validatingadmissionpolicies --> allow update [any kubernetes api resource]
+delete validatingadmissionpolicies --> allow patch [any kubernetes api resource]
+delete validatingadmissionpolicies --> allow delete [any kubernetes api resource]
+deletecollection validatingadmissionpolicies --> allow create [any kubernetes api resource]
+deletecollection validatingadmissionpolicies --> allow update [any kubernetes api resource]
+deletecollection validatingadmissionpolicies --> allow patch [any kubernetes api resource]
+deletecollection validatingadmissionpolicies --> allow delete [any kubernetes api resource]
+update validatingadmissionpolicies/status --> update validatingadmissionpolicies
+patch validatingadmissionpolicies/status --> patch validatingadmissionpolicies
+get validatingadmissionpolicies/status --> get validatingadmissionpolicies
+update volumeattachments/status --> update volumeattachments
+patch volumeattachments/status --> patch volumeattachments
+get volumeattachments/status --> get volumeattachments

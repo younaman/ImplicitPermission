@@ -1,0 +1,223 @@
+Prompt: As a Kubernetes expert, specializing in identifying API Resource Reference Analysis and API Resource Permission Reference Analysis. Your task is to make the following two analyses of kubernetes api resources provided by users: 1. API Resource Reference Analysis: Analyze dependencies, interactions, and relationships among Kubernetes API resources. 2.API Resource Permission Reference Analysis: Analyze the influence relationship between permissions, that is, one permission may trigger another permission.
+    Regarding the API resource reference analysis, it is defined as follows: In the context of Kubernetes, API resource reference analysis can be understood as analyzing the dependencies and interactions among API resources within Kubernetes. Below are some examples:
+    1. For the Deployment resource, its Spec.PodTemplate field determines the state of the Pod resources it manages. Modifying the content of this field will also cause corresponding changes in the associated Pods. Therefore, this is an example of resource reference: Deployment --> Pod.
+    2. For the Node resource, its Spec.Taints field is related to the scheduling of Pod resources. The values of the Taint field affect the creation and deletion of Pod resources. Therefore, this is an example of resource reference: Node --> Pod.
+    3. For the Daemonset resource, its Spec.Template field determines the state of the Pods it manages. Therefore, it can be considered a resource reference: Daemonset --> Pod.
+    4. For the StatefulSet resource, its Spec.Template field determines the state of the Pod resources it manages. Modifying the content of this field will also cause corresponding changes in the associated Pods. Therefore, this is an example of resource reference: StatefulSet --> Pod.
+    5. For the Job resource, its Spec.Template field determines the state of the Pods it manages. Therefore, this is an example of resource reference: Job --> Pod.
+    6. For the ClusterRoleBinding resource, it can associate a ServiceAccount with a ClusterRole, thus creating a reference from ClusterRoleBinding to ClusterRole.
+    Regarding the API resource permission reference analysis, it is defined as follows: Based on API resource reference analysis, the analysis incorporates the resource's verb to further examine the feasibility of the reference as well as the specific content and functionality of the reference. Below are some examples:
+    1. For example 1 in the above resource reference, the permission reference analysis is as follows: Creating a Deployment resource can control the creation of Pod resources. From this, we can derive the permission reference: create Deployment --> create Pod, etc.
+    2. For example 2 in the above resource reference, the permission reference analysis is as follows: Modifying the taint field of a Node resource can trigger the deletion of some specific Pods. From this, we can derive the permission reference: patch Node --> delete Pod, update Node --> delete Pod, etc.
+    3. For example 3 in the above resource reference, the permission reference analysis is as follows: Deleting Daemonset can lead to the deletion of corresponding Pod resources. From this, we can derive the permission reference: delete Daemonset --> delete Pod, deletecollection Daemonset --> delete Pod, etc.
+    4. For example 4 in the above resource reference, the permission reference analysis is as follows: Modifying the spec.template of StatefulSet resources can result in Modifying corresponding Pod resources, and modifying the spec.replicas of StatefulSet can result in creation and deletion the corresponding pod. From this, we can derive the permission reference: patch StatefulSet --> patch Pod, patch StatefulSet --> create Pod, patch StatefulSet --> delete Pod, update StatefulSet --> update Pod, etc.
+    5. For example 5 in the above resource reference, the permission reference analysis is as follows: Creating a Job resource can control the creation of Pod resources. From this, we can derive the permission reference: create Job --> create Pod, etc.
+    6. For example 6 in the above resource reference, the permission reference analysis is as follows: Creating a ClusterRoleBinding can bind a ClusterRole to a ServiceAccount. The cluster by default has the cluster-admin ClusterRole, which possesses all permissions. Therefore, the following permission reference can be derived: create ClusterRoleBinding --> * *.
+    Do you understand the above two concepts, and are you ready to start the analysis? Answer yes or no.
+
+Answer: 
+Yes.
+
+Prompt: Please make the API resource reference analysis of validatingwebhookconfigurations. Just list the final results such as 'validatingwebhookconfigurations --> otherRes', without explanation.
+
+Answer: 
+validatingwebhookconfigurations --> Pod
+validatingwebhookconfigurations --> Deployment
+validatingwebhookconfigurations --> StatefulSet
+validatingwebhookconfigurations --> DaemonSet
+validatingwebhookconfigurations --> Job
+validatingwebhookconfigurations --> ReplicaSet
+validatingwebhookconfigurations --> ReplicationController
+validatingwebhookconfigurations --> CronJob
+validatingwebhookconfigurations --> ConfigMap
+validatingwebhookconfigurations --> Secret
+validatingwebhookconfigurations --> Service
+validatingwebhookconfigurations --> Ingress
+validatingwebhookconfigurations --> PersistentVolumeClaim
+validatingwebhookconfigurations --> Namespace
+validatingwebhookconfigurations --> Node
+validatingwebhookconfigurations --> CustomResourceDefinition
+validatingwebhookconfigurations --> Role
+validatingwebhookconfigurations --> ClusterRole
+validatingwebhookconfigurations --> RoleBinding
+validatingwebhookconfigurations --> ClusterRoleBinding
+validatingwebhookconfigurations --> ServiceAccount
+validatingwebhookconfigurations --> EndpointSlice
+validatingwebhookconfigurations --> VolumeAttachment
+validatingwebhookconfigurations --> StorageClass
+validatingwebhookconfigurations --> PersistentVolume
+validatingwebhookconfigurations --> NetworkPolicy
+validatingwebhookconfigurations --> PodDisruptionBudget
+validatingwebhookconfigurations --> PriorityClass
+validatingwebhookconfigurations --> LimitRange
+validatingwebhookconfigurations --> ResourceQuota
+validatingwebhookconfigurations --> Event
+validatingwebhookconfigurations --> Lease
+validatingwebhookconfigurations --> MutatingWebhookConfiguration
+validatingwebhookconfigurations --> ValidatingWebhookConfiguration
+
+Prompt: Review your answer against the initial definitions:  
+1. Did you avoid introducing unrelated resources?
+Answer "Pass" if compliant, or "Fail: [reason]" if not.
+If the answer is fail, please correct the result.
+
+Answer: 
+Fail: The result included unrelated resources. The initial definition specifies that resource references should only include resources directly influenced, controlled, or impacted by the analyzed resource. A ValidatingWebhookConfiguration interacts with resources by validating requests for their creation, update, or deletion, but it does not directly control or affect the state or lifecycle of these resources in the same way that a controller resource (such as a Deployment or StatefulSet) would. Instead, it merely validates the admission requests to these resources.
+Corrected Result:
+validatingwebhookconfigurations --> Pod
+validatingwebhookconfigurations --> Deployment
+validatingwebhookconfigurations --> StatefulSet
+validatingwebhookconfigurations --> DaemonSet
+validatingwebhookconfigurations --> Job
+validatingwebhookconfigurations --> ReplicaSet
+validatingwebhookconfigurations --> ReplicationController
+validatingwebhookconfigurations --> CronJob
+validatingwebhookconfigurations --> ConfigMap
+validatingwebhookconfigurations --> Secret
+validatingwebhookconfigurations --> Service
+validatingwebhookconfigurations --> Ingress
+validatingwebhookconfigurations --> PersistentVolumeClaim
+validatingwebhookconfigurations --> Namespace
+validatingwebhookconfigurations --> Node
+validatingwebhookconfigurations --> CustomResourceDefinition
+validatingwebhookconfigurations --> Role
+validatingwebhookconfigurations --> ClusterRole
+validatingwebhookconfigurations --> RoleBinding
+validatingwebhookconfigurations --> ClusterRoleBinding
+validatingwebhookconfigurations --> ServiceAccount
+validatingwebhookconfigurations --> StorageClass
+validatingwebhookconfigurations --> PersistentVolume
+validatingwebhookconfigurations --> NetworkPolicy
+validatingwebhookconfigurations --> PodDisruptionBudget
+validatingwebhookconfigurations --> PriorityClass
+validatingwebhookconfigurations --> LimitRange
+validatingwebhookconfigurations --> ResourceQuota
+validatingwebhookconfigurations --> MutatingWebhookConfiguration
+validatingwebhookconfigurations --> ValidatingWebhookConfiguration
+Explanation of adjustment: Removed resources such as EndpointSlice, VolumeAttachment, Event, and Lease, as these resources typically do not have creation/update/delete requests validated through admission webhooks.
+
+Prompt: The verbs supported by validatingwebhookconfigurations resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 
+    please make the API resource permission reference analysis based on the results of the API resource reference analysis. Just list the final results of permission reference, such as 'verb1 validatingwebhookconfigurations --> verb2 otherRes', without explanation.
+
+Answer: 
+create validatingwebhookconfigurations --> create Pod
+create validatingwebhookconfigurations --> update Pod
+create validatingwebhookconfigurations --> patch Pod
+create validatingwebhookconfigurations --> delete Pod
+create validatingwebhookconfigurations --> create Deployment
+create validatingwebhookconfigurations --> update Deployment
+create validatingwebhookconfigurations --> patch Deployment
+create validatingwebhookconfigurations --> delete Deployment
+create validatingwebhookconfigurations --> create StatefulSet
+create validatingwebhookconfigurations --> update StatefulSet
+create validatingwebhookconfigurations --> patch StatefulSet
+create validatingwebhookconfigurations --> delete StatefulSet
+create validatingwebhookconfigurations --> create DaemonSet
+create validatingwebhookconfigurations --> update DaemonSet
+create validatingwebhookconfigurations --> patch DaemonSet
+create validatingwebhookconfigurations --> delete DaemonSet
+create validatingwebhookconfigurations --> create Job
+create validatingwebhookconfigurations --> update Job
+create validatingwebhookconfigurations --> patch Job
+create validatingwebhookconfigurations --> delete Job
+create validatingwebhookconfigurations --> create ReplicaSet
+create validatingwebhookconfigurations --> update ReplicaSet
+create validatingwebhookconfigurations --> patch ReplicaSet
+create validatingwebhookconfigurations --> delete ReplicaSet
+create validatingwebhookconfigurations --> create ReplicationController
+create validatingwebhookconfigurations --> update ReplicationController
+create validatingwebhookconfigurations --> patch ReplicationController
+create validatingwebhookconfigurations --> delete ReplicationController
+create validatingwebhookconfigurations --> create CronJob
+create validatingwebhookconfigurations --> update CronJob
+create validatingwebhookconfigurations --> patch CronJob
+create validatingwebhookconfigurations --> delete CronJob
+create validatingwebhookconfigurations --> create ConfigMap
+create validatingwebhookconfigurations --> update ConfigMap
+create validatingwebhookconfigurations --> patch ConfigMap
+create validatingwebhookconfigurations --> delete ConfigMap
+create validatingwebhookconfigurations --> create Secret
+create validatingwebhookconfigurations --> update Secret
+create validatingwebhookconfigurations --> patch Secret
+create validatingwebhookconfigurations --> delete Secret
+create validatingwebhookconfigurations --> create Service
+create validatingwebhookconfigurations --> update Service
+create validatingwebhookconfigurations --> patch Service
+create validatingwebhookconfigurations --> delete Service
+create validatingwebhookconfigurations --> create Ingress
+create validatingwebhookconfigurations --> update Ingress
+create validatingwebhookconfigurations --> patch Ingress
+create validatingwebhookconfigurations --> delete Ingress
+create validatingwebhookconfigurations --> create PersistentVolumeClaim
+create validatingwebhookconfigurations --> update PersistentVolumeClaim
+create validatingwebhookconfigurations --> patch PersistentVolumeClaim
+create validatingwebhookconfigurations --> delete PersistentVolumeClaim
+create validatingwebhookconfigurations --> create Namespace
+create validatingwebhookconfigurations --> update Namespace
+create validatingwebhookconfigurations --> patch Namespace
+create validatingwebhookconfigurations --> delete Namespace
+create validatingwebhookconfigurations --> create Node
+create validatingwebhookconfigurations --> update Node
+create validatingwebhookconfigurations --> patch Node
+create validatingwebhookconfigurations --> delete Node
+create validatingwebhookconfigurations --> create CustomResourceDefinition
+create validatingwebhookconfigurations --> update CustomResourceDefinition
+create validatingwebhookconfigurations --> patch CustomResourceDefinition
+create validatingwebhookconfigurations --> delete CustomResourceDefinition
+create validatingwebhookconfigurations --> create Role
+create validatingwebhookconfigurations --> update Role
+create validatingwebhookconfigurations --> patch Role
+create validatingwebhookconfigurations --> delete Role
+create validatingwebhookconfigurations --> create ClusterRole
+create validatingwebhookconfigurations --> update ClusterRole
+create validatingwebhookconfigurations --> patch ClusterRole
+create validatingwebhookconfigurations --> delete ClusterRole
+create validatingwebhookconfigurations --> create RoleBinding
+create validatingwebhookconfigurations --> update RoleBinding
+create validatingwebhookconfigurations --> patch RoleBinding
+create validatingwebhookconfigurations --> delete RoleBinding
+create validatingwebhookconfigurations --> create ClusterRoleBinding
+create validatingwebhookconfigurations --> update ClusterRoleBinding
+create validatingwebhookconfigurations --> patch ClusterRoleBinding
+create validatingwebhookconfigurations --> delete ClusterRoleBinding
+create validatingwebhookconfigurations --> create ServiceAccount
+create validatingwebhookconfigurations --> update ServiceAccount
+create validatingwebhookconfigurations --> patch ServiceAccount
+create validatingwebhookconfigurations --> delete ServiceAccount
+create validatingwebhookconfigurations --> create StorageClass
+create validatingwebhookconfigurations --> update StorageClass
+create validatingwebhookconfigurations --> patch StorageClass
+create validatingwebhookconfigurations --> delete StorageClass
+create validatingwebhookconfigurations --> create PersistentVolume
+create validatingwebhookconfigurations --> update PersistentVolume
+create validatingwebhookconfigurations --> patch PersistentVolume
+create validatingwebhookconfigurations --> delete PersistentVolume
+create validatingwebhookconfigurations --> create NetworkPolicy
+create validatingwebhookconfigurations --> update NetworkPolicy
+create validatingwebhookconfigurations --> patch NetworkPolicy
+create validatingwebhookconfigurations --> delete NetworkPolicy
+create validatingwebhookconfigurations --> create PodDisruptionBudget
+create validatingwebhookconfigurations --> update PodDisruptionBudget
+create validatingwebhookconfigurations --> patch PodDisruptionBudget
+create validatingwebhookconfigurations --> delete PodDisruptionBudget
+create validatingwebhookconfigurations --> create PriorityClass
+create validatingwebhookconfigurations --> update PriorityClass
+create validatingwebhookconfigurations --> patch PriorityClass
+create validatingwebhookconfigurations --> delete PriorityClass
+create validatingwebhookconfigurations --> create LimitRange
+create validatingwebhookconfigurations --> update LimitRange
+create validatingwebhookconfigurations --> patch LimitRange
+create validatingwebhookconfigurations --> delete LimitRange
+create validatingwebhookconfigurations --> create ResourceQuota
+create validatingwebhookconfigurations --> update ResourceQuota
+create validatingwebhookconfigurations --> patch ResourceQuota
+create validatingwebhookconfigurations --> delete ResourceQuota
+create validatingwebhookconfigurations --> create MutatingWebhookConfiguration
+create validatingwebhookconfigurations --> update MutatingWebhookConfiguration
+create validatingwebhookconfigurations --> patch MutatingWebhookConfiguration
+create validatingwebhookconfigurations --> delete MutatingWebhookConfiguration
+create validatingwebhookconfigurations --> create ValidatingWebhookConfiguration
+create validatingwebhookconfigurations --> update ValidatingWebhookConfiguration
+create validatingwebhookconfigurations --> patch ValidatingWebhookConfiguration
+create validatingwebhookconfigurations --> delete ValidatingWebhookConfiguration
+

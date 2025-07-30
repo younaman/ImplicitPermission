@@ -15,7 +15,7 @@ var (
 	funcFileName  = "./methods.tmp"
 	pkgPath       = rootDir
 	inputFile     = "input"
-	resultFile    = "result"
+	resultFile    = "v1.31.2"
 	FilteredGraph *callgraph.Graph
 	Pkgs          []*packages.Package
 
@@ -163,6 +163,9 @@ func main() {
 				startVRes["PersistentVolumeClaimInformer.Informer()"] = startVRes[""]
 				delete(startVRes, "")
 				//fmt.Println("test2:", startFuncs, startVRes)
+			case "(*k8s.io/kubernetes/pkg/controller/storageversionmigrator.SVMController).Run":
+				startType = 1
+				startFuncs["storageVersionInformer.Informer()"] = "(*k8s.io/kubernetes/pkg/controller/storageversionmigrator.SVMController).Sync"
 			default:
 				//fmt.Println("queue, inform", structInfo.RunMethod.FullName())
 			}
@@ -309,4 +312,3 @@ func start2(startVRes map[string][]string, startFuncs map[string]string) {
 	}
 
 }
-

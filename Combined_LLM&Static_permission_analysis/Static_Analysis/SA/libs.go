@@ -9,6 +9,7 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,6 +39,31 @@ type NewFuncInfo struct {
 type CallInfo struct {
 	Caller       string
 	HandlerFuncs []string
+}
+
+type InterfaceInfo struct {
+	Name    string
+	Methods []MethodInfo
+	File    string
+}
+
+type MethodInfo struct {
+	Name       string
+	Params     []Param
+	Results    []Param
+	IsVariadic bool
+}
+
+type Param struct {
+	Name string
+	Type string
+}
+
+type StructInfo2 struct {
+	Name       string
+	File       string
+	EmbedGen   bool
+	EmbedTypes []string
 }
 
 var (
@@ -786,7 +812,7 @@ func conversion() {
 		return
 	}
 
-	fmt.Println("Methods and unused imports have been removed and file updated.")
+	//fmt.Println("Methods and unused imports have been removed and file updated.")
 }
 func removeLinesFromFile(filePath string, stringsToRemove []string) error {
 	file, err := os.Open(filePath)
@@ -931,7 +957,7 @@ func handler() {
 	}
 
 	for fileName, methodMap := range inputData {
-		fmt.Printf("Processing file: %s\n", fileName)
+		//fmt.Printf("Processing file: %s\n", fileName)
 		if err := processFile(fileName, methodMap); err != nil {
 			fmt.Fprintf(os.Stderr, "Error processing file %s: %v\n", fileName, err)
 		}
@@ -958,7 +984,7 @@ func processFile(filePath string, methodMap map[string]string) error {
 		if callExpr, ok := n.(*ast.CallExpr); ok {
 			if selectorExpr, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
 				if replacement, exists := methodMap[selectorExpr.Sel.Name]; exists {
-					fmt.Printf("Replacing %s with %s in file %s\n", selectorExpr.Sel.Name, replacement, filePath)
+					//fmt.Printf("Replacing %s with %s in file %s\n", selectorExpr.Sel.Name, replacement, filePath)
 
 					selectorExpr.Sel.Name = replacement
 					updated = true
@@ -1111,9 +1137,62 @@ func slowstart() {
 		fmt.Fprintf(os.Stderr, "Error modifying function %s: %v\n", manageReplicasName, err)
 		os.Exit(1)
 	}
-
-	fmt.Println("Modifications completed successfully.")
+	removeLineWithString(filePath, "k8s.io/utils/integer")
+	fmt.Println("init successfully.")
 }
+
+func removeLineWithString(filePath string, targetString string) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("cannot open file: %v", err)
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	found := false
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, targetString) {
+			found = true
+			continue
+		}
+		lines = append(lines, line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading file: %v", err)
+	}
+
+	if !found {
+		//fmt.Printf("string '%s' not found in file %s\n", targetString, filePath)
+		return nil
+	}
+
+	file, err = os.Create(filePath)
+	if err != nil {
+		return fmt.Errorf("cannot create file: %v", err)
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for _, line := range lines {
+		_, err := writer.WriteString(line + "\n")
+		if err != nil {
+			return fmt.Errorf("error writing to file: %v", err)
+		}
+	}
+
+	err = writer.Flush()
+	if err != nil {
+		return fmt.Errorf("error flushing buffer: %v", err)
+	}
+
+	//fmt.Printf("successfully removed lines containing '%s' from file %s\n", targetString, filePath)
+	return nil
+}
+
 func replaceFunctionBody(filePath string, functionName string) error {
 	src, err := os.ReadFile(filePath)
 	if err != nil {
@@ -1132,7 +1211,7 @@ func replaceFunctionBody(filePath string, functionName string) error {
 	ast.Inspect(node, func(n ast.Node) bool {
 		if funcDecl, ok := n.(*ast.FuncDecl); ok {
 			if funcDecl.Name.Name == functionName {
-				fmt.Printf("Modifying function %s in file %s\n", functionName, filePath)
+				//fmt.Printf("Modifying function %s in file %s\n", functionName, filePath)
 
 				returnStmt := &ast.ReturnStmt{
 					Results: []ast.Expr{
@@ -1189,7 +1268,7 @@ func addLineToFunction(filePath string, functionName string, newCode string) err
 	ast.Inspect(node, func(n ast.Node) bool {
 		if funcDecl, ok := n.(*ast.FuncDecl); ok {
 			if funcDecl.Name.Name == functionName {
-				fmt.Printf("Modifying function %s in file %s\n", functionName, filePath)
+				//fmt.Printf("Modifying function %s in file %s\n", functionName, filePath)
 
 				newStmt, err := parseStmt(newCode)
 				if err != nil {
@@ -1242,6 +1321,7 @@ func parseStmt(stmt string) (ast.Stmt, error) {
 	return nil, fmt.Errorf("failed to extract statement")
 }
 func Before() {
+	addMethodIfNeed()
 	filePath := rootDir + "pkg/controller/volume/attachdetach/attach_detach_controller.go"
 
 	stringsToRemove := []string{
@@ -1445,3 +1525,452 @@ func ReadFiles(funcFileName string) []string {
 	return targetFuncs
 }
 
+func addMethodIfNeed() {
+	if !checkVersion(rootDir) {
+		fmt.Println("v1")
+		return
+	}
+	// if len(os.Args) < 2 {
+	// 	fmt.Println("Usage: go run main.go <path_to_clientgo_typed>")
+	// 	fmt.Println("Example: go run main.go /path/to/k8s/staging/src/k8s.io/client-go/kubernetes/typed")
+	// 	os.Exit(1)
+	// }
+
+	// rootPath := os.Args[1]
+
+	// fmt.Printf("Analyzing path: %s\n", rootPath)
+
+	interfaces, structs, err := analyzeDirectory(rootDir)
+	if err != nil {
+		fmt.Printf("Error analyzing directory: %v\n", err)
+		os.Exit(1)
+	}
+
+	//fmt.Printf("Found %d interfaces and %d structs with gentype embedding\n", len(interfaces), len(structs))
+
+	fileToInterfaces := make(map[string][]InterfaceInfo)
+	fileToStructs := make(map[string][]StructInfo2)
+
+	for _, interfaceInfo := range interfaces {
+		fileToInterfaces[interfaceInfo.File] = append(fileToInterfaces[interfaceInfo.File], interfaceInfo)
+	}
+
+	for _, structInfo := range structs {
+		fileToStructs[structInfo.File] = append(fileToStructs[structInfo.File], structInfo)
+	}
+
+	for filePath, fileInterfaces := range fileToInterfaces {
+		fileStructs, hasStructs := fileToStructs[filePath]
+
+		for _, interfaceInfo := range fileInterfaces {
+			if hasStructs {
+				for _, structInfo := range fileStructs {
+					filteredInterface := filterInterfaceMethods(interfaceInfo, structInfo.EmbedTypes)
+					if len(filteredInterface.Methods) == 0 {
+						continue
+					}
+
+					err := addMethodsToStruct(structInfo, filteredInterface)
+					if err != nil {
+						fmt.Printf("Error adding methods to struct %s: %v\n", structInfo.Name, err)
+					} else {
+						// fmt.Printf("Added %d methods from interface %s to struct %s in file %s\n",
+						// 	len(filteredInterface.Methods), interfaceInfo.Name, structInfo.Name, filePath)
+					}
+				}
+			} else {
+				//fmt.Printf("Interface %s in file %s: no matching gentype struct found\n", interfaceInfo.Name, filePath)
+			}
+		}
+	}
+
+	//fmt.Println("Method addition completed!")
+}
+
+func analyzeDirectory(rootPath string) ([]InterfaceInfo, []StructInfo2, error) {
+	var interfaces []InterfaceInfo
+	var structs []StructInfo2
+
+	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !strings.HasSuffix(path, ".go") ||
+			strings.HasSuffix(path, "_test.go") ||
+			strings.Contains(path, "generated") ||
+			strings.Contains(path, "fake") {
+			return nil
+		}
+
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, nil, parser.AllErrors)
+		if err != nil {
+			fmt.Printf("Warning: failed to parse %s: %v\n", path, err)
+			return nil
+		}
+
+		fileInterfaces := extractInterfaces(file, path)
+		interfaces = append(interfaces, fileInterfaces...)
+
+		fileStructs := extractStructsWithGentype(file, path)
+		structs = append(structs, fileStructs...)
+
+		return nil
+	})
+
+	return interfaces, structs, err
+}
+
+func extractInterfaces(file *ast.File, filePath string) []InterfaceInfo {
+	var interfaces []InterfaceInfo
+
+	ast.Inspect(file, func(n ast.Node) bool {
+		if genDecl, ok := n.(*ast.GenDecl); ok && genDecl.Tok == token.TYPE {
+			for _, spec := range genDecl.Specs {
+				if typeSpec, ok := spec.(*ast.TypeSpec); ok {
+					if interfaceType, ok := typeSpec.Type.(*ast.InterfaceType); ok {
+						methods := extractMethodsFromInterface(interfaceType)
+						if len(methods) > 0 {
+							interfaces = append(interfaces, InterfaceInfo{
+								Name:    typeSpec.Name.Name,
+								Methods: methods,
+								File:    filePath,
+							})
+						}
+					}
+				}
+			}
+		}
+		return true
+	})
+
+	return interfaces
+}
+
+func extractMethodsFromInterface(interfaceType *ast.InterfaceType) []MethodInfo {
+	var methods []MethodInfo
+
+	for _, method := range interfaceType.Methods.List {
+		if len(method.Names) > 0 {
+			if funcType, ok := method.Type.(*ast.FuncType); ok {
+				methodInfo := MethodInfo{
+					Name: method.Names[0].Name,
+				}
+
+				if funcType.Params != nil {
+					for _, param := range funcType.Params.List {
+						paramType := getTypeString(param.Type)
+						if len(param.Names) > 0 {
+							for _, name := range param.Names {
+								methodInfo.Params = append(methodInfo.Params, Param{
+									Name: name.Name,
+									Type: paramType,
+								})
+							}
+						} else {
+							methodInfo.Params = append(methodInfo.Params, Param{
+								Name: "",
+								Type: paramType,
+							})
+						}
+					}
+
+					if funcType.Params.List != nil && len(funcType.Params.List) > 0 {
+						lastParam := funcType.Params.List[len(funcType.Params.List)-1]
+						if _, ok := lastParam.Type.(*ast.Ellipsis); ok {
+							methodInfo.IsVariadic = true
+						}
+					}
+				}
+
+				if funcType.Results != nil {
+					for _, result := range funcType.Results.List {
+						resultType := getTypeString(result.Type)
+						if len(result.Names) > 0 {
+							for _, name := range result.Names {
+								methodInfo.Results = append(methodInfo.Results, Param{
+									Name: name.Name,
+									Type: resultType,
+								})
+							}
+						} else {
+							methodInfo.Results = append(methodInfo.Results, Param{
+								Name: "",
+								Type: resultType,
+							})
+						}
+					}
+				}
+
+				methods = append(methods, methodInfo)
+			}
+		}
+	}
+
+	return methods
+}
+
+func extractStructsWithGentype(file *ast.File, filePath string) []StructInfo2 {
+	var structs []StructInfo2
+
+	ast.Inspect(file, func(n ast.Node) bool {
+		if genDecl, ok := n.(*ast.GenDecl); ok && genDecl.Tok == token.TYPE {
+			for _, spec := range genDecl.Specs {
+				if typeSpec, ok := spec.(*ast.TypeSpec); ok {
+					if structType, ok := typeSpec.Type.(*ast.StructType); ok {
+						structName := typeSpec.Name.Name
+						for _, field := range structType.Fields.List {
+							if len(field.Names) == 0 {
+								typeStr := getTypeString(field.Type)
+								if strings.Contains(filePath, "pod") || strings.Contains(filePath, "node") {
+									fmt.Printf("Debug: struct %s in file %s has embedded field: %s\n", structName, filePath, typeStr)
+								}
+							}
+						}
+
+						if hasEmbed, embedTypes := hasGentypeEmbedding(structType); hasEmbed {
+							//fmt.Printf("found gentype embedded struct: %s in file %s, embedded types: %v\n", structName, filePath, embedTypes)
+							structs = append(structs, StructInfo2{
+								Name:       typeSpec.Name.Name,
+								File:       filePath,
+								EmbedGen:   true,
+								EmbedTypes: embedTypes,
+							})
+						}
+					}
+				}
+			}
+		}
+		return true
+	})
+
+	return structs
+}
+
+func hasGentypeEmbedding(structType *ast.StructType) (bool, []string) {
+	var embedTypes []string
+
+	for _, field := range structType.Fields.List {
+		if len(field.Names) == 0 {
+			typeStr := getTypeString(field.Type)
+			if strings.Contains(typeStr, "gentype.Client") {
+				if strings.Contains(typeStr, "gentype.ClientWithListAndApply") {
+					embedTypes = append(embedTypes, "ClientWithListAndApply")
+				} else if strings.Contains(typeStr, "gentype.ClientWithList") {
+					embedTypes = append(embedTypes, "ClientWithList")
+				} else if strings.Contains(typeStr, "gentype.ClientWithApply") {
+					embedTypes = append(embedTypes, "ClientWithApply")
+				} else if strings.Contains(typeStr, "gentype.Client") {
+					embedTypes = append(embedTypes, "Client")
+				}
+			}
+		}
+	}
+
+	return len(embedTypes) > 0, embedTypes
+}
+
+func filterInterfaceMethods(interfaceInfo InterfaceInfo, embedTypes []string) InterfaceInfo {
+	clientMethods := map[string][]string{
+		"Client":                 []string{"Create", "Get", "Update", "UpdateStatus", "Delete", "Patch", "Watch"},
+		"ClientWithList":         []string{"Create", "Get", "Update", "UpdateStatus", "Delete", "Patch", "Watch", "List", "DeleteCollection"},
+		"ClientWithApply":        []string{"Create", "Get", "Update", "UpdateStatus", "Delete", "Patch", "Watch", "Apply", "ApplyStatus"},
+		"ClientWithListAndApply": []string{"Create", "Get", "Update", "UpdateStatus", "Delete", "Patch", "Watch", "List", "DeleteCollection", "Apply", "ApplyStatus"},
+	}
+
+	targetMethods := []string{"Create", "Get", "Patch", "Update", "Delete", "List", "Watch", "DeleteCollection"}
+
+	var supportedMethods []string
+	for _, embedType := range embedTypes {
+		if methods, exists := clientMethods[embedType]; exists {
+			supportedMethods = append(supportedMethods, methods...)
+		}
+	}
+
+	var filteredMethods []MethodInfo
+	for _, method := range interfaceInfo.Methods {
+		if contains(targetMethods, method.Name) && contains(supportedMethods, method.Name) {
+			filteredMethods = append(filteredMethods, method)
+		}
+	}
+
+	return InterfaceInfo{
+		Name:    interfaceInfo.Name,
+		Methods: filteredMethods,
+		File:    interfaceInfo.File,
+	}
+}
+
+// func contains(slice []string, item string) bool {
+// 	for _, s := range slice {
+// 		if s == item {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
+
+func getTypeString(expr ast.Expr) string {
+	switch t := expr.(type) {
+	case *ast.Ident:
+		return t.Name
+	case *ast.StarExpr:
+		return "*" + getTypeString(t.X)
+	case *ast.SelectorExpr:
+		return getTypeString(t.X) + "." + t.Sel.Name
+	case *ast.ArrayType:
+		return "[]" + getTypeString(t.Elt)
+	case *ast.MapType:
+		return "map[" + getTypeString(t.Key) + "]" + getTypeString(t.Value)
+	case *ast.Ellipsis:
+		return "..." + getTypeString(t.Elt)
+	case *ast.InterfaceType:
+		return "interface{}"
+	case *ast.FuncType:
+		return "func"
+	case *ast.IndexExpr:
+		return getTypeString(t.X) + "[" + getTypeString(t.Index) + "]"
+	case *ast.IndexListExpr:
+		var params []string
+		for _, index := range t.Indices {
+			params = append(params, getTypeString(index))
+		}
+		return getTypeString(t.X) + "[" + strings.Join(params, ", ") + "]"
+	default:
+		return "unknown"
+	}
+}
+
+func addMethodsToStruct(structInfo StructInfo2, interfaceInfo InterfaceInfo) error {
+	content, err := ioutil.ReadFile(structInfo.File)
+	if err != nil {
+		return err
+	}
+
+	// fset := token.NewFileSet()
+	// file, err := parser.ParseFile(fset, structInfo.File, content, parser.AllErrors)
+	// if err != nil {
+	// 	return err
+	// }
+
+	var methodsCode []string
+	for _, method := range interfaceInfo.Methods {
+		methodCode := generateMethodCode(structInfo.Name, method)
+		methodsCode = append(methodsCode, methodCode)
+	}
+
+	if len(methodsCode) == 0 {
+		return nil
+	}
+
+	methodsStr := "\n// Methods from interface " + interfaceInfo.Name + "\n"
+	methodsStr += strings.Join(methodsCode, "\n\n")
+	methodsStr += "\n"
+
+	newContent := string(content) + methodsStr
+	return ioutil.WriteFile(structInfo.File, []byte(newContent), 0644)
+}
+
+func generateMethodCode(structName string, method MethodInfo) string {
+	var code strings.Builder
+
+	code.WriteString("func (c *")
+	code.WriteString(structName)
+	code.WriteString(") ")
+	code.WriteString(method.Name)
+	code.WriteString("(")
+
+	var params []string
+	for i, param := range method.Params {
+		paramStr := ""
+		if param.Name != "" {
+			paramStr += param.Name + " "
+		} else {
+			paramStr += fmt.Sprintf("arg%d ", i)
+		}
+		paramStr += param.Type
+		params = append(params, paramStr)
+	}
+	code.WriteString(strings.Join(params, ", "))
+	code.WriteString(")")
+
+	if len(method.Results) > 0 {
+		code.WriteString(" (")
+		var results []string
+		for i, result := range method.Results {
+			resultStr := ""
+			if result.Name != "" {
+				resultStr += result.Name + " "
+			} else if len(method.Results) > 1 {
+				resultStr += fmt.Sprintf("r%d ", i)
+			}
+			resultStr += result.Type
+			results = append(results, resultStr)
+		}
+		code.WriteString(strings.Join(results, ", "))
+		code.WriteString(")")
+	}
+
+	code.WriteString(" {\n")
+
+	if len(method.Results) > 0 {
+		code.WriteString("\t")
+		if len(method.Results) == 1 {
+			code.WriteString("return nil")
+			//code.WriteString(getZeroValue(method.Results[0].Type))
+		} else {
+			code.WriteString("return ")
+			// var zeroValues []string
+			// for _, result := range method.Results {
+			// 	zeroValues = append(zeroValues, getZeroValue(result.Type))
+			// }
+			// code.WriteString(strings.Join(zeroValues, ", "))
+		}
+		code.WriteString("\n")
+	}
+
+	code.WriteString("}")
+
+	return code.String()
+}
+
+func getZeroValue(typeStr string) string {
+	if strings.HasPrefix(typeStr, "*") || strings.HasPrefix(typeStr, "[]") || strings.HasPrefix(typeStr, "map[") {
+		return "nil"
+	}
+
+	switch typeStr {
+	case "string":
+		return `""`
+	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
+		return "0"
+	case "float32", "float64":
+		return "0.0"
+	case "bool":
+		return "false"
+	case "error":
+		return "nil"
+	default:
+		if strings.Contains(typeStr, "interface") {
+			return "nil"
+		}
+		if strings.Contains(typeStr, ".") {
+			return typeStr + "{}"
+		}
+		return "nil"
+	}
+}
+
+func checkVersion(rootPath string) bool {
+	genTypePath := rootPath + "staging/src/k8s.io/client-go/gentype/type.go"
+	_, err := os.Stat(genTypePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+		fmt.Printf("error checking file %s: %v\n", genTypePath, err)
+		return false
+	}
+	return true
+}

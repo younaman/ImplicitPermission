@@ -1,0 +1,85 @@
+Prompt: As a Kubernetes expert, specializing in identifying API Resource Reference Analysis and API Resource Permission Reference Analysis. Your task is to make the following two analyses of kubernetes api resources provided by users: 1. API Resource Reference Analysis: Analyze dependencies, interactions, and relationships among Kubernetes API resources. 2.API Resource Permission Reference Analysis: Analyze the influence relationship between permissions, that is, one permission may trigger another permission.
+Regarding the API resource reference analysis, it is defined as follows: In the context of Kubernetes, API resource reference analysis can be understood as analyzing the dependencies and interactions among API resources within Kubernetes. API Resource reference can be divided into resource reference and resource reference. Below are some examples:
+1. For the Node resource, its Spec.Taints field is related to the scheduling of Pod resources. The values of the Taint field affect the creation and deletion of Pod resources. Therefore, this is an example of resource reference: Node --> Pod.
+2. For the Daemonset resource, its Spec.Template field determines the state of the Pods it manages. Therefore, it can be considered a resource reference: Daemonset --> Pod.
+3. For the StatefulSet resource, its Spec.Template field determines the state of the Pod resources it manages. Modifying the content of this field will also cause corresponding changes in the associated Pods. Therefore, this is an example of resource reference: StatefulSet --> Pod.
+4. For the Job resource, its Spec.Template field determines the state of the Pods it manages. Therefore, this is an example of resource reference: Job --> Pod.
+5. For the ClusterRoleBinding resource, it can associate a ServiceAccount with a ClusterRole, thus creating a reference from ClusterRoleBinding to ClusterRole.
+Regarding the API resource permission reference analysis, it is defined as follows: Based on API resource reference analysis, the analysis incorporates the resource's verb to further examine the feasibility of the reference as well as the specific content and functionality of the reference. Below are some examples:
+1. For example 1 in the above resource reference, the permission reference analysis is as follows: Modifying the taint field of a Node resource can trigger the deletion of some specific Pods. From this, we can derive the permission reference: patch Node --> delete Pod, update Node --> delete Pod, etc.
+2. For example 2 in the above resource reference, the permission reference analysis is as follows: Deleting Daemonset can lead to the deletion of corresponding Pod resources. From this, we can derive the permission reference: delete Daemonset --> delete Pod, deletecollection Daemonset --> delete Pod, etc.
+3. For example 3 in the above resource reference, the permission reference analysis is as follows: Modifying the spec.template of StatefulSet resources can result in Modifying corresponding Pod resources, and modifying the spec.replicas of StatefulSet can result in creation and deletion the corresponding pod. From this, we can derive the permission reference: patch StatefulSet --> patch Pod, patch StatefulSet --> create Pod, patch StatefulSet --> delete Pod, update StatefulSet --> update Pod, etc.
+4. For example 4 in the above resource reference, the permission reference analysis is as follows: Creating a Job resource can control the creation of Pod resources. From this, we can derive the permission reference: create Job --> create Pod, etc.
+5. For example 5 in the above resource reference, the permission reference analysis is as follows: Creating a ClusterRoleBinding can bind a ClusterRole to a ServiceAccount. The cluster by default has the cluster-admin ClusterRole, which possesses all permissions. Therefore, the following permission reference can be derived: create ClusterRoleBinding --> * *.
+Do you understand the above two concepts, and are you ready to start the analysis? Answer yes or no.
+
+Answer: 
+Yes.
+
+Prompt: Please make the API resource reference analysis of configmaps. Just list the final results such as 'configmaps --> otherRes', without explanation.
+
+Answer: 
+configmaps --> Pod
+configmaps --> Deployment
+configmaps --> DaemonSet
+configmaps --> StatefulSet
+configmaps --> Job
+configmaps --> CronJob
+configmaps --> ReplicaSet
+configmaps --> ReplicationController
+configmaps --> Secret
+configmaps --> PersistentVolumeClaim
+configmaps --> Volume
+configmaps --> ServiceAccount
+configmaps --> MutatingWebhookConfiguration
+configmaps --> ValidatingWebhookConfiguration
+configmaps --> CustomResourceDefinition
+configmaps --> APIService
+configmaps --> Ingress
+configmaps --> HorizontalPodAutoscaler
+configmaps --> PodTemplate
+
+Prompt: Review your answer against the initial definitions:  
+1. Did you avoid introducing unrelated resources?
+Answer "Pass" if compliant, or "Fail: [reason]" if not.
+If the answer is fail, please correct the result.
+
+Answer: 
+Fail: Introduced unrelated resources. According to the initial definition, resource references must reflect direct dependencies or interactions. ConfigMaps themselves do not directly reference or control resources like Deployment, DaemonSet, StatefulSet, etc. Instead, these resources reference ConfigMaps through their Pod template specifications. Therefore, the correct direction should be reversed for those cases.
+Corrected Result:
+Pod --> ConfigMap
+Deployment --> ConfigMap
+DaemonSet --> ConfigMap
+StatefulSet --> ConfigMap
+Job --> ConfigMap
+CronJob --> ConfigMap
+ReplicaSet --> ConfigMap
+ReplicationController --> ConfigMap
+MutatingWebhookConfiguration --> ConfigMap
+ValidatingWebhookConfiguration --> ConfigMap
+CustomResourceDefinition --> ConfigMap
+APIService --> ConfigMap
+Ingress --> ConfigMap
+HorizontalPodAutoscaler --> ConfigMap
+PodTemplate --> ConfigMap
+ConfigMaps themselves do not directly reference other resources, hence there is no configmaps --> otherRes reference.
+
+Prompt: The verbs supported by configmaps resource include: [Create Delete DeleteCollection Get List Update Watch Patch]
+please make the API resource permission reference analysis based on the results of the API resource reference analysis. Just list the final results of permission reference, such as 'verb1 configmaps --> verb2 otherRes', without explanation.
+
+Answer:
+Since the corrected API resource reference analysis indicates no direct resource references **from** configmaps **to** other resources, there are no direct permission references initiated from configmaps to other resources.
+
+Therefore, the final permission reference result is:
+
+*(no permission references from configmaps to other resources)*
+
+However, if you are interested in the reverse direction (how permissions on other resources can trigger permissions on configmaps), please explicitly let me know.
+
+Prompt: Review your answer against the initial definitions:
+1. Did you avoid introducing unrelated permission references?
+Answer "Pass" if compliant, or "Fail: [reason]" if not.
+If the answer is fail, please correct the result.
+
+Answer:
+Pass

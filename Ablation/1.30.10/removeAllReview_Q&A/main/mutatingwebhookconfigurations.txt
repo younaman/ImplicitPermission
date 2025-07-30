@@ -1,0 +1,185 @@
+Prompt: As a Kubernetes expert, specializing in identifying API Resource Reference Analysis and API Resource Permission Reference Analysis. Your task is to make the following two analyses of kubernetes api resources provided by users: 1. API Resource Reference Analysis: Analyze dependencies, interactions, and relationships among Kubernetes API resources. 2.API Resource Permission Reference Analysis: Analyze the influence relationship between permissions, that is, one permission may trigger another permission.
+Regarding the API resource reference analysis, it is defined as follows: In the context of Kubernetes, API resource reference analysis can be understood as analyzing the dependencies and interactions among API resources within Kubernetes. Below are some examples:
+1. For the Deployment resource, its Spec.PodTemplate field determines the state of the Pod resources it manages. Modifying the content of this field will also cause corresponding changes in the associated Pods. Therefore, this is an example of resource reference: Deployment --> Pod.
+2. For the Node resource, its Spec.Taints field is related to the scheduling of Pod resources. The values of the Taint field affect the creation and deletion of Pod resources. Therefore, this is an example of resource reference: Node --> Pod.
+3. For the Daemonset resource, its Spec.Template field determines the state of the Pods it manages. Therefore, it can be considered a resource reference: Daemonset --> Pod.
+4. For the StatefulSet resource, its Spec.Template field determines the state of the Pod resources it manages. Modifying the content of this field will also cause corresponding changes in the associated Pods. Therefore, this is an example of resource reference: StatefulSet --> Pod.
+5. For the Job resource, its Spec.Template field determines the state of the Pods it manages. Therefore, this is an example of resource reference: Job --> Pod.
+6. For the ClusterRoleBinding resource, it can associate a ServiceAccount with a ClusterRole, thus creating a reference from ClusterRoleBinding to ClusterRole.
+Regarding the API resource permission reference analysis, it is defined as follows: Based on API resource reference analysis, the analysis incorporates the resource's verb to further examine the feasibility of the reference as well as the specific content and functionality of the reference. Below are some examples:
+1. For example 1 in the above resource reference, the permission reference analysis is as follows: Creating a Deployment resource can control the creation of Pod resources. From this, we can derive the permission reference: create Deployment --> create Pod, etc.
+2. For example 2 in the above resource reference, the permission reference analysis is as follows: Modifying the taint field of a Node resource can trigger the deletion of some specific Pods. From this, we can derive the permission reference: patch Node --> delete Pod, update Node --> delete Pod, etc.
+3. For example 3 in the above resource reference, the permission reference analysis is as follows: Deleting Daemonset can lead to the deletion of corresponding Pod resources. From this, we can derive the permission reference: delete Daemonset --> delete Pod, deletecollection Daemonset --> delete Pod, etc.
+4. For example 4 in the above resource reference, the permission reference analysis is as follows: Modifying the spec.template of StatefulSet resources can result in Modifying corresponding Pod resources, and modifying the spec.replicas of StatefulSet can result in creation and deletion the corresponding pod. From this, we can derive the permission reference: patch StatefulSet --> patch Pod, patch StatefulSet --> create Pod, patch StatefulSet --> delete Pod, update StatefulSet --> update Pod, etc.
+5. For example 5 in the above resource reference, the permission reference analysis is as follows: Creating a Job resource can control the creation of Pod resources. From this, we can derive the permission reference: create Job --> create Pod, etc.
+6. For example 6 in the above resource reference, the permission reference analysis is as follows: Creating a ClusterRoleBinding can bind a ClusterRole to a ServiceAccount. The cluster by default has the cluster-admin ClusterRole, which possesses all permissions. Therefore, the following permission reference can be derived: create ClusterRoleBinding --> * *.
+Do you understand the above two concepts, and are you ready to start the analysis? Answer yes or no.
+
+Answer: 
+Yes.
+
+Prompt: Please make the API resource reference analysis of mutatingwebhookconfigurations. Just list the final results such as 'mutatingwebhookconfigurations --> otherRes', without explanation.
+
+Answer: 
+mutatingwebhookconfigurations --> Pod
+mutatingwebhookconfigurations --> Deployment
+mutatingwebhookconfigurations --> StatefulSet
+mutatingwebhookconfigurations --> DaemonSet
+mutatingwebhookconfigurations --> Job
+mutatingwebhookconfigurations --> ReplicaSet
+mutatingwebhookconfigurations --> ReplicationController
+mutatingwebhookconfigurations --> CronJob
+mutatingwebhookconfigurations --> ConfigMap
+mutatingwebhookconfigurations --> Secret
+mutatingwebhookconfigurations --> Service
+mutatingwebhookconfigurations --> Ingress
+mutatingwebhookconfigurations --> PersistentVolumeClaim
+mutatingwebhookconfigurations --> CustomResourceDefinition
+mutatingwebhookconfigurations --> Namespace
+mutatingwebhookconfigurations --> Node
+mutatingwebhookconfigurations --> ServiceAccount
+mutatingwebhookconfigurations --> Role
+mutatingwebhookconfigurations --> ClusterRole
+mutatingwebhookconfigurations --> RoleBinding
+mutatingwebhookconfigurations --> ClusterRoleBinding
+mutatingwebhookconfigurations --> StorageClass
+mutatingwebhookconfigurations --> PersistentVolume
+mutatingwebhookconfigurations --> EndpointSlice
+mutatingwebhookconfigurations --> Endpoints
+mutatingwebhookconfigurations --> PodDisruptionBudget
+
+Prompt: The verbs supported by mutatingwebhookconfigurations resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 
+please make the API resource permission reference analysis based on the results of the API resource reference analysis. Just list the final results of permission reference, such as 'verb1 mutatingwebhookconfigurations --> verb2 otherRes', without explanation.
+
+Answer: 
+create mutatingwebhookconfigurations --> create Pod
+create mutatingwebhookconfigurations --> create Deployment
+create mutatingwebhookconfigurations --> create StatefulSet
+create mutatingwebhookconfigurations --> create DaemonSet
+create mutatingwebhookconfigurations --> create Job
+create mutatingwebhookconfigurations --> create ReplicaSet
+create mutatingwebhookconfigurations --> create ReplicationController
+create mutatingwebhookconfigurations --> create CronJob
+create mutatingwebhookconfigurations --> create ConfigMap
+create mutatingwebhookconfigurations --> create Secret
+create mutatingwebhookconfigurations --> create Service
+create mutatingwebhookconfigurations --> create Ingress
+create mutatingwebhookconfigurations --> create PersistentVolumeClaim
+create mutatingwebhookconfigurations --> create CustomResourceDefinition
+create mutatingwebhookconfigurations --> create Namespace
+create mutatingwebhookconfigurations --> create Node
+create mutatingwebhookconfigurations --> create ServiceAccount
+create mutatingwebhookconfigurations --> create Role
+create mutatingwebhookconfigurations --> create ClusterRole
+create mutatingwebhookconfigurations --> create RoleBinding
+create mutatingwebhookconfigurations --> create ClusterRoleBinding
+create mutatingwebhookconfigurations --> create StorageClass
+create mutatingwebhookconfigurations --> create PersistentVolume
+create mutatingwebhookconfigurations --> create EndpointSlice
+create mutatingwebhookconfigurations --> create Endpoints
+create mutatingwebhookconfigurations --> create PodDisruptionBudget
+update mutatingwebhookconfigurations --> update Pod
+update mutatingwebhookconfigurations --> update Deployment
+update mutatingwebhookconfigurations --> update StatefulSet
+update mutatingwebhookconfigurations --> update DaemonSet
+update mutatingwebhookconfigurations --> update Job
+update mutatingwebhookconfigurations --> update ReplicaSet
+update mutatingwebhookconfigurations --> update ReplicationController
+update mutatingwebhookconfigurations --> update CronJob
+update mutatingwebhookconfigurations --> update ConfigMap
+update mutatingwebhookconfigurations --> update Secret
+update mutatingwebhookconfigurations --> update Service
+update mutatingwebhookconfigurations --> update Ingress
+update mutatingwebhookconfigurations --> update PersistentVolumeClaim
+update mutatingwebhookconfigurations --> update CustomResourceDefinition
+update mutatingwebhookconfigurations --> update Namespace
+update mutatingwebhookconfigurations --> update Node
+update mutatingwebhookconfigurations --> update ServiceAccount
+update mutatingwebhookconfigurations --> update Role
+update mutatingwebhookconfigurations --> update ClusterRole
+update mutatingwebhookconfigurations --> update RoleBinding
+update mutatingwebhookconfigurations --> update ClusterRoleBinding
+update mutatingwebhookconfigurations --> update StorageClass
+update mutatingwebhookconfigurations --> update PersistentVolume
+update mutatingwebhookconfigurations --> update EndpointSlice
+update mutatingwebhookconfigurations --> update Endpoints
+update mutatingwebhookconfigurations --> update PodDisruptionBudget
+patch mutatingwebhookconfigurations --> patch Pod
+patch mutatingwebhookconfigurations --> patch Deployment
+patch mutatingwebhookconfigurations --> patch StatefulSet
+patch mutatingwebhookconfigurations --> patch DaemonSet
+patch mutatingwebhookconfigurations --> patch Job
+patch mutatingwebhookconfigurations --> patch ReplicaSet
+patch mutatingwebhookconfigurations --> patch ReplicationController
+patch mutatingwebhookconfigurations --> patch CronJob
+patch mutatingwebhookconfigurations --> patch ConfigMap
+patch mutatingwebhookconfigurations --> patch Secret
+patch mutatingwebhookconfigurations --> patch Service
+patch mutatingwebhookconfigurations --> patch Ingress
+patch mutatingwebhookconfigurations --> patch PersistentVolumeClaim
+patch mutatingwebhookconfigurations --> patch CustomResourceDefinition
+patch mutatingwebhookconfigurations --> patch Namespace
+patch mutatingwebhookconfigurations --> patch Node
+patch mutatingwebhookconfigurations --> patch ServiceAccount
+patch mutatingwebhookconfigurations --> patch Role
+patch mutatingwebhookconfigurations --> patch ClusterRole
+patch mutatingwebhookconfigurations --> patch RoleBinding
+patch mutatingwebhookconfigurations --> patch ClusterRoleBinding
+patch mutatingwebhookconfigurations --> patch StorageClass
+patch mutatingwebhookconfigurations --> patch PersistentVolume
+patch mutatingwebhookconfigurations --> patch EndpointSlice
+patch mutatingwebhookconfigurations --> patch Endpoints
+patch mutatingwebhookconfigurations --> patch PodDisruptionBudget
+delete mutatingwebhookconfigurations --> delete Pod
+delete mutatingwebhookconfigurations --> delete Deployment
+delete mutatingwebhookconfigurations --> delete StatefulSet
+delete mutatingwebhookconfigurations --> delete DaemonSet
+delete mutatingwebhookconfigurations --> delete Job
+delete mutatingwebhookconfigurations --> delete ReplicaSet
+delete mutatingwebhookconfigurations --> delete ReplicationController
+delete mutatingwebhookconfigurations --> delete CronJob
+delete mutatingwebhookconfigurations --> delete ConfigMap
+delete mutatingwebhookconfigurations --> delete Secret
+delete mutatingwebhookconfigurations --> delete Service
+delete mutatingwebhookconfigurations --> delete Ingress
+delete mutatingwebhookconfigurations --> delete PersistentVolumeClaim
+delete mutatingwebhookconfigurations --> delete CustomResourceDefinition
+delete mutatingwebhookconfigurations --> delete Namespace
+delete mutatingwebhookconfigurations --> delete Node
+delete mutatingwebhookconfigurations --> delete ServiceAccount
+delete mutatingwebhookconfigurations --> delete Role
+delete mutatingwebhookconfigurations --> delete ClusterRole
+delete mutatingwebhookconfigurations --> delete RoleBinding
+delete mutatingwebhookconfigurations --> delete ClusterRoleBinding
+delete mutatingwebhookconfigurations --> delete StorageClass
+delete mutatingwebhookconfigurations --> delete PersistentVolume
+delete mutatingwebhookconfigurations --> delete EndpointSlice
+delete mutatingwebhookconfigurations --> delete Endpoints
+delete mutatingwebhookconfigurations --> delete PodDisruptionBudget
+deletecollection mutatingwebhookconfigurations --> delete Pod
+deletecollection mutatingwebhookconfigurations --> delete Deployment
+deletecollection mutatingwebhookconfigurations --> delete StatefulSet
+deletecollection mutatingwebhookconfigurations --> delete DaemonSet
+deletecollection mutatingwebhookconfigurations --> delete Job
+deletecollection mutatingwebhookconfigurations --> delete ReplicaSet
+deletecollection mutatingwebhookconfigurations --> delete ReplicationController
+deletecollection mutatingwebhookconfigurations --> delete CronJob
+deletecollection mutatingwebhookconfigurations --> delete ConfigMap
+deletecollection mutatingwebhookconfigurations --> delete Secret
+deletecollection mutatingwebhookconfigurations --> delete Service
+deletecollection mutatingwebhookconfigurations --> delete Ingress
+deletecollection mutatingwebhookconfigurations --> delete PersistentVolumeClaim
+deletecollection mutatingwebhookconfigurations --> delete CustomResourceDefinition
+deletecollection mutatingwebhookconfigurations --> delete Namespace
+deletecollection mutatingwebhookconfigurations --> delete Node
+deletecollection mutatingwebhookconfigurations --> delete ServiceAccount
+deletecollection mutatingwebhookconfigurations --> delete Role
+deletecollection mutatingwebhookconfigurations --> delete ClusterRole
+deletecollection mutatingwebhookconfigurations --> delete RoleBinding
+deletecollection mutatingwebhookconfigurations --> delete ClusterRoleBinding
+deletecollection mutatingwebhookconfigurations --> delete StorageClass
+deletecollection mutatingwebhookconfigurations --> delete PersistentVolume
+deletecollection mutatingwebhookconfigurations --> delete EndpointSlice
+deletecollection mutatingwebhookconfigurations --> delete Endpoints
+deletecollection mutatingwebhookconfigurations --> delete PodDisruptionBudget
+

@@ -386,13 +386,13 @@ Environmental requirements are as follows:
 First, pull the container.
 
 ```bash
-root@instance:/# docker pull <anonymous_or_placeholder>/sa:v4
+root@instance:/# docker pull <anonymous_or_placeholder>/sa:latest
 ```
 
 Second, start the container.
 
 ```bash
-root@instance:/# docker run -it <anonymous_or_placeholder>/sa:v4 bash
+root@instance:/# docker run -it <anonymous_or_placeholder>/sa:latest bash
 ```
 
 Then, in the container, run the tool.
@@ -554,3 +554,10 @@ The detailed data are as follows(references wrapped in ** are missing references
 
 We also carried out experiments with other LLM, and the results were placed in */ImplicitPermission/Combined_LLM&Static_permission_analysis/other_LLM*
 
+# Multi-version data
+
+The above experimental data are based on version v1.30.10 of kubernetes(The latest version of kubernetes during our research). In addition, we have also conducted a complete experiment on versions v1.29.2, v1.30.2 and v1.31.2 of kubernetes, and the specific data results are stored in the `/ImplicitPermission/Multi_version` directory.
+
+# Ablation
+
+We further evaluated the contributions of each component through an ablation study, which confirms the complementary roles of LLM-based reasoning and static analysis. The specific data is stored in the `/ImplicitPermission/Ablation` directory.

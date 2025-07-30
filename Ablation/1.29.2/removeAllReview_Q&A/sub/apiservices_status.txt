@@ -1,0 +1,31 @@
+Prompt: As a Kubernetes expert, specializing in identifying API Sub-Resource reference and API Sub-Resource Permission Reference. Your task is to make the sub-resource reference analysis and sub-resource permission reference analysis.
+Regarding the API Sub-Resource Reference analysis, it is defined as follows: In the context of Kubernetes, sub-resource reference analysis can be understood as analyzing the relationship between sub-resources and other resources. Below are some examples:
+1. For pods/exec, creating pods/exec can execute commands in Pod, and secrets is mounted in pod, so there are the following resource reference: pods/exec --> secrets.
+2. For pods/eviction, creating pods/eviction can expel the specified pod, so there are the following resource reference: pods/eviction --> pods.
+3. For replicasets/scale, updating replicasets/scale can update the number of pods, so there are the following resource reference: replicasets/scale --> pods.
+4. For nodes/status, updating nodes/status can update the status field of node, so there are the following resource reference: nodes/status --> nodes.
+5. For statefulsets/scale, updating statefulsets/scale can update the number of pods, so there are the following resource reference: statefulsets/scale --> pods.
+Regarding the API Sub-Resource Permission Reference analysis, it is defined as follows: In the context of Kubernetes, sub-resource permission reference analysis can be understood as analyzing how operations on sub-resources might affect other API resources or trigger operations on other API resources. Below are some examples:
+1. For pod/exec, creating pods/exec can access the terminal session of a pod and access the contents of secrets mounted in the pod. Therefore, it can be concluded: create pods/exec --> get secrets.
+2. For pods/eviction, creating pods/eviction can delete the specified pod. Therefore, it can be concluded: create pods/eviction --> delete pod.
+3. For replicasets/scale, patching or updating replicasets/scale can adjust the number of Pods managed by the ReplicaSets, thereby increasing or decreasing the number of Pod resources. Therefore, it can be concluded: patch replicasets/scale --> create Pod, update replicasets/scale --> create Pod, patch replicasets/scale --> delete Pod, update replicasets/scale --> delete Pod.
+4. For nodes/status, patching or updating nodes/status can affect the status of Nodes. Therefore, it can be concluded: patch nodes/status --> patch nodes, update nodes/status --> update nodes.
+5. For statefulsets/scale, patching or updating statefulsets/scale can adjust the number of Pods managed by the StatefulSets, thereby increasing or decreasing the number of Pod resources. Therefore, it can be concluded: patch statefulsets/scale --> create Pod, update statefulsets/scale --> create Pod, patch statefulsets/scale --> delete Pod, update statefulsets/scale --> delete Pod.
+Do you understand the above concepts, and are you ready to start the analysis? Answer yes or no.
+
+Answer: 
+Yes.
+
+Prompt: Please make the API Sub-Resource Reference analysis of apiservices/status. Just list the final results such as 'apiservices/status --> otherRes', without explanation.
+
+Answer: 
+apiservices/status --> apiservices
+
+Prompt: The verbs supported by apiservices/status resource include: [Get Update Patch]
+Based on the verb obtained above, please make the subresource permission reference analysis of apiservices/status. Just list the results of permission reference, such as 'verb apiservices/status --> create B', without explanation.
+
+Answer: 
+get apiservices/status --> get apiservices
+update apiservices/status --> update apiservices
+patch apiservices/status --> patch apiservices
+
