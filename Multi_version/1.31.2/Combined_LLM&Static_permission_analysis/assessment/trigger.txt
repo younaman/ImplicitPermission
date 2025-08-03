@@ -242,6 +242,8 @@ patch resourcequotas/status --> patch resourcequotas
 create rolebindings --> bind roles
 update rolebindings --> bind roles
 patch rolebindings --> bind roles
+delete deviceclasses --> affect create pods
+deletecollection deviceclasses --> affect create pods
 update secrets --> update pods
 patch secrets --> patch pods
 patch secrets --> patch deployments

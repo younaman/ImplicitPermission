@@ -476,8 +476,8 @@ patch services --> patch endpoints
 deletecollection services --> delete endpointslices
 deletecollection services --> delete endpoints
 create deviceclasses --> create pods
-delete deviceclasses --> delete pods
-deletecollection deviceclasses --> delete pods
+delete deviceclasses --> affect create pods
+deletecollection deviceclasses --> affect create pods
 get services/proxy --> get services
 get services/proxy --> get endpoints
 create services/proxy --> get services

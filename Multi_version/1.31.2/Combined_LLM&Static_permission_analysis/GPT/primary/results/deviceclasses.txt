@@ -63,5 +63,5 @@ Fail: The verbs "update deviceclasses --> create pods", "update deviceclasses --
 Corrected result:
 
 create deviceclasses --> create pods
-delete deviceclasses --> delete pods
-deletecollection deviceclasses --> delete pods
+delete deviceclass --> fail to create pod that uses it
+deletecollection deviceclasses --> fail to create pod that uses it
