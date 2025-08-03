@@ -22,12 +22,14 @@ Yes.
 Prompt: Please make the API resource reference analysis of deviceclasses. Just list the final results such as 'deviceclasses --> otherRes', without explanation.
 
 Answer: 
-deviceclasses --> resourceclaims. [1][2]
-deviceclasses --> pods. [2][3]
-Learn more:
-Kubernetes Spec: DeviceClass
-Dynamic Resource Allocation | Kubernetes
-Kubernetes 1.34 – What you need to know - Cloudsmith
+deviceclasses --> updates [1]
+deviceclasses --> devices [1][2]
+deviceclasses --> deviceClassProperties [1]
+deviceclasses --> contractModel [1]
+deviceclasses --> ResourceClaim [3]
+deviceclasses --> ResourceClaimTemplate [3]
+deviceclasses --> ResourceSlice [3]
+deviceclasses --> Pods [3]
 
 Prompt: Review your answer against the initial definitions:  
 1. Did you avoid introducing unrelated resources?
@@ -35,18 +37,53 @@ Answer "Pass" if compliant, or "Fail: [reason]" if not.
 If the answer is fail, please correct the result.
 
 Answer: 
+Fail: The initial answer introduced unrelated or non-existent resources such as 'updates', 'devices', 'deviceClassProperties', and 'contractModel'. These are not valid Kubernetes API resources related to deviceclasses.
 
-Pass
+Here is the corrected result:
+
+deviceclasses --> ResourceClaim
+deviceclasses --> ResourceClaimTemplate
+deviceclasses --> ResourceSlice
+deviceclasses --> Pods
 
 Prompt: The verbs supported by deviceclasses resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 
 please make the API resource permission reference analysis based on the results of the API resource reference analysis. Just list the final results of permission reference, such as 'verb1 deviceclasses --> verb2 otherRes', without explanation.
 
 Answer: 
-I'm now ready to present the finalized API permission references based on my thorough assessment. I've distilled my analysis to the most direct and impactful relationships.
-create deviceclasses --> create resourceclaims
-create deviceclasses --> create pods
-patch deviceclasses --> create pods
-update deviceclasses --> create pods
+Get deviceclasses --> Get deviceClassProperties
+Get deviceclasses --> Get contractModel
+Get deviceclasses --> Get ResourceClaimTemplate
+List deviceclasses --> List devices
+List deviceclasses --> List deviceClassProperties
+List deviceclasses --> List contractModel
+List deviceclasses --> List ResourceClaim
+List deviceclasses --> List ResourceClaimTemplate
+List deviceclasses --> List ResourceSlice
+List deviceclasses --> List Pods
+Watch deviceclasses  --> Watch devices
+Watch deviceclasses --> Watch deviceClassProperties
+Watch deviceclasses --> Watch contractModel
+Watch deviceclasses --> Watch ResourceClaim
+Watch deviceclasses --> Watch ResourceClaimTemplate
+Watch deviceclasses --> Watch Resource Slice
+Watch deviceclasses --> Watch Pods
+Create deviceclasses --> Get deviceClassProperties
+Create deviceclasses --> Get contractModel
+Create deviceclasses --> Get ResourceClaimTemplate
+Update deviceclasses --> Create updates
+Update deviceclasses --> Patch devices
+Update deviceclasses --> Patch Pods
+Patch deviceclasses --> Create updates
+Patch deviceclasses --> Patch devices
+Patch deviceclasses --> Patch Pods
+Delete deviceclasses -->  List Pods
+Delete deviceclasses --> List ResourceClaim
+Delete deviceclasses --> Delete devices
+Delete deviceclasses --> Delete updates
+DeleteCollection deviceclasses --> List Pods
+DeleteCollection deviceclasses --> List ResourceClaim
+DeleteCollection deviceclasses --> DeleteCollection devices
+DeleteCollection deviceclasses --> DeleteCollection updates
 
 Prompt: Review your answer against the initial definitions:
 1. Did you avoid introducing unrelated permission references?
@@ -55,6 +92,12 @@ If the answer is fail, please correct the result.
 
 Answer: 
 
-Fail: [The creation or modification of a DeviceClass does not directly trigger actions (like create, delete, update) on ResourceClaims or Pods. A DeviceClass is a passive resource that defines parameters for dynamic resource allocation. It is referenced by Pods, but the lifecycle of Pods and their associated ResourceClaims is not directly controlled by actions on the DeviceClass resource itself. Changes to a DeviceClass apply only to new ResourceClaims created after the change, and do not affect existing ones.]
-There are no direct permission references.
+Fail: The previous answer introduced permission references to unrelated or non-existent API resources such as 'updates', 'devices', 'deviceClassProperties', and 'contractModel'. The analysis should be based on the corrected resource references.
+
+Here is the corrected result:
+
+Delete deviceclasses --> List ResourceClaims
+Delete deviceclasses --> List ResourceClaimTemplates
+DeleteCollection deviceclasses --> List ResourceClaims
+DeleteCollection deviceclasses --> List ResourceClaimTemplates
 

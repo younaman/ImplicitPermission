@@ -22,10 +22,15 @@ Yes.
 Prompt: Please make the API resource reference analysis of deviceclasses. Just list the final results such as 'deviceclasses --> otherRes', without explanation.
 
 Answer: 
-If there are no results, then we list nothing.
+Here are the API resource reference analysis results for deviceclasses:
 
-So we output nothing.
-deviceclasses -->
+DeviceClass --> Pod (via device allocation and scheduling) 12
+
+DeviceClass --> Node (via node selection and taint effects) 3
+
+DeviceClass --> DevicePlugin (through driver configuration and device management) 78
+
+DeviceClass --> DeviceModel (in KubeEdge context for device property mapping) 56
 
 Prompt: Review your answer against the initial definitions:  
 1. Did you avoid introducing unrelated resources?
@@ -33,13 +38,37 @@ Answer "Pass" if compliant, or "Fail: [reason]" if not.
 If the answer is fail, please correct the result.
 
 Answer: 
-Pass
+Fail: Introduced potentially unrelated resources (DevicePlugin, DeviceModel) without clear reference evidence from standard Kubernetes API resources.
+
+Corrected results:
+
+DeviceClass --> Pod
+
+DeviceClass --> Node
+
+(Only includes relationships verifiable against core Kubernetes resource interactions, excluding edge/extended components without explicit references.)
 
 Prompt: The verbs supported by deviceclasses resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 
 please make the API resource permission reference analysis based on the results of the API resource reference analysis. Just list the final results of permission reference, such as 'verb1 deviceclasses --> verb2 otherRes', without explanation.
 
 Answer: 
-deviceclasses -->
+Here are the API resource permission reference analysis results for deviceclasses:
+
+create DeviceClass --> create Pod
+
+create DeviceClass --> update Node
+
+update DeviceClass --> update Pod
+
+update DeviceClass --> update Node
+
+patch DeviceClass --> patch Pod
+
+patch DeviceClass --> patch Node
+
+delete DeviceClass --> delete Pod
+
+deletecollection DeviceClass --> delete Pod
 
 Prompt: Review your answer against the initial definitions:
 1. Did you avoid introducing unrelated permission references?
@@ -47,6 +76,16 @@ Answer "Pass" if compliant, or "Fail: [reason]" if not.
 If the answer is fail, please correct the result.
 
 Answer: 
-Pass
+Fail: Introduced potentially unsupported permission references (e.g., create DeviceClass --> create Pod without explicit evidence that DeviceClass creation directly triggers Pod creation in standard Kubernetes).
+
+Corrected results:
+
+update DeviceClass --> update Node
+
+patch DeviceClass --> patch Node
+
+delete DeviceClass --> delete Pod
+
+(Only includes permission references with clear, verifiable cascading effects in core Kubernetes behavior)
 
 
