@@ -270,7 +270,7 @@ The Controller
 The code in our controller is the same as in our previous example.
 
 csharp
-复制
+ 
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorld.Controllers;
@@ -290,7 +290,7 @@ The Program.cs
 The code in our Program.cs is actually slightly different. Let's look at it again here:
 
 csharp
-复制
+ 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -318,7 +318,7 @@ app.Run();
 By default, when creating a new Web API project in Visual Studio, the Program.cs file will generate code that includes the following lines:
 
 csharp
-复制
+ 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 

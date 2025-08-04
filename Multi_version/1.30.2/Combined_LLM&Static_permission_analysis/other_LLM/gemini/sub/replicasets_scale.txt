@@ -20,7 +20,7 @@ Yes
 Prompt: Please make the API Sub-Resource Reference analysis of replicasets/scale. Just list the final results such as 'replicasets/scale --> otherRes', without explanation.
 
 Answer: 
-复制
+ 
 replicasets/scale --> pods
 
 Prompt: Review your answer against the initial definitions:  

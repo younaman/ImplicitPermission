@@ -92,7 +92,7 @@ But the 'use' verb is part of the ServiceAccount's RBAC roles. So if a ServiceAc
 
 But how is 'use' represented in RBAC? The 'use' verb is part of the authorization checks for ServiceAccounts. So a Role or ClusterRole that allows 'use' on a ServiceAccount would have rules like:
 
-复制
+ 
 resources: ["serviceaccounts"]
 verbs: ["use"]
 resourceNames: ["my-sa"]

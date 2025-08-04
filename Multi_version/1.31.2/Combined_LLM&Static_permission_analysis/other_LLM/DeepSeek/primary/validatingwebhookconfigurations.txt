@@ -213,7 +213,6 @@ create validatingwebhookconfigurations --> create pods.
 
 Corrected result (assuming pods is the referenced resource):
 
-复制
 create validatingwebhookconfigurations --> create pods
 update validatingwebhookconfigurations --> create pods
 patch validatingwebhookconfigurations --> create pods

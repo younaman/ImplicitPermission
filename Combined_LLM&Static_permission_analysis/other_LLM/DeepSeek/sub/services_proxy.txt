@@ -111,7 +111,7 @@ Thus, the previous answer incorrectly linked permissions to services instead of 
 Corrected Result
 The proper permission references should align with the resources being accessed through the proxy (e.g., pods, endpoints), not the service itself. However, based on strict Kubernetes RBAC, the services/proxy sub-resource requires explicit permissions on the services/proxy sub-resource, not directly on other resources. For example:
 
-复制
+ 
 get services/proxy --> get services
 
 But deeper access (e.g., to pods) would require separate permissions on pods. Since the initial task strictly asks for direct permission references (like the examples), and Kubernetes RBAC for services/proxy only requires permissions on the service itself, the original answer Passes if we strictly follow the verb-to-verb mapping. However, if considering indirect resource access (like pods), it would fail. Since the examples (e.g., nodes/status --> nodes) focus on direct parent resources, the answer is compliant.

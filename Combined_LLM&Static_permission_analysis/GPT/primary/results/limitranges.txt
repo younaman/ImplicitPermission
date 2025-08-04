@@ -38,7 +38,7 @@ Fail: Introduced unrelated resources.
 Explanation:
 The initial definition states that API resource reference analysis should reflect direct dependencies or interactions among resources. LimitRanges directly apply constraints at Pod creation or update time, thus directly influencing Pod resources. However, resources like Deployment, StatefulSet, DaemonSet, Job, CronJob, ReplicaSet, and ReplicationController manage Pods indirectly through Pod templates but do not directly reference LimitRanges. LimitRanges do not directly reference or interact explicitly with these higher-level controllers; rather, the interaction occurs specifically at the Pod level.
 Corrected result:
-复制
+ 
 limitranges --> Pod
 
 Prompt: The verbs supported by limitranges resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 

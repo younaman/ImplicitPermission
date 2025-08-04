@@ -337,7 +337,7 @@ Compliance Check: The original answer incorrectly assumed permissions on the tar
 Alignment with Definitions: Permission references must reflect direct dependencies (e.g., verbs on the resource itself), not indirect system-managed actions.
 Fail: The permission references to update (resource specified in .spec.resource.resource) are unrelated. Modifying storageversionmigrations does not require permissions on the target resource (e.g., pods, deployments). The permissions are scoped to the storageversionmigrations resource itself.
 Corrected Result:
-复制
+ 
 create storageversionmigrations --> create storageversionmigrations  
 delete storageversionmigrations --> delete storageversionmigrations  
 patch storageversionmigrations --> patch storageversionmigrations  

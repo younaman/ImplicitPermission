@@ -198,7 +198,7 @@ Alright, I need to review my previous answer against the initial definitions to 
 
 First, the original answer I provided was:
 
-复制
+
 storageclasses --> persistentvolumeclaim  
 storageclasses --> persistentvolume  
 storageclasses --> secret
@@ -225,7 +225,7 @@ Only the Secret entry is valid.
 Correction: Remove non-compliant entries and retain only valid ones.
 Fail: The original answer incorrectly listed storageclasses --> persistentvolumeclaim and storageclasses --> persistentvolume, which reverse the actual dependency direction. According to the initial definitions, the analysis should reflect resources directly controlled by the target resource (e.g., parent --> child). PVCs and PVs reference StorageClasses (PVC/PV --> StorageClass), but StorageClasses do not manage or determine the state of PVCs/PVs. The valid entry is storageclasses --> secret (if parameters reference a Secret).
 Corrected Result:
-复制
+ 
 storageclasses --> secret
 
 Prompt: The verbs supported by storageclasses resource include: [Create Delete DeleteCollection Get List Update Watch Patch] 
@@ -256,8 +256,6 @@ patch storageclasses --> get secret
 Other verbs like delete, list, etc., on storageclasses don't directly involve interacting with Secrets, unless the deletion of a StorageClass would affect the Secret, which it typically doesn't. So those verbs may not require any permissions on Secrets.
 
 Therefore, the final permission references should be the verbs that directly involve creating, updating, or patching a StorageClass that references a Secret, leading to needing "get" on secrets.
-text
-复制
 create storageclasses --> get secret  
 update storageclasses --> get secret  
 patch storageclasses --> get secret  
@@ -284,7 +282,6 @@ Pass
 
 Final Output
 
-text
-复制
+
 Pass
 

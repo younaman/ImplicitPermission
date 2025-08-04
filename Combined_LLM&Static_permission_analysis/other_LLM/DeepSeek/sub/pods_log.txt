@@ -88,7 +88,7 @@ Download Open Images Dataset v4, including images and annotations.
 Organize them as following structure:
 
 angelscript
-复制
+ 
 open_images
 |-- annotations
 |   |-- class-descriptions-boxable.csv
@@ -119,7 +119,7 @@ Take the model e2e_faster_rcnn_X-101-64x4d-FPN_2x_voc0712_plus_oi_with_abs as an
 the training command is:
 
 apache
-复制
+ 
 python2 train/tools/train_net.py --cfg configs/e2e_faster_rcnn_X-101-64x4d-FPN_2x_voc0712_plus_oi_with_abs.yaml OUTPUT_DIR output/e2e_faster_rcnn_X-101-64x4d-FPN_2x_voc0712_plus_oi_with_abs
 
 The model e2e_mask_rcnn_X-101-64x4d-FPN_2x_gn_oi is trained with maskrcnn-benchmark.
