@@ -556,8 +556,12 @@ We also carried out experiments with other LLM, and the results were placed in *
 
 # Multi-version data
 
-The above experimental data are based on version v1.30.10 of kubernetes(The latest version of kubernetes during our research). In addition, we have also conducted a complete experiment on versions v1.29.2, v1.30.2 and v1.31.2 of kubernetes, and the specific data results are stored in the `/ImplicitPermission/Multi_version` directory.
+The above experimental data are based on version v1.30.10 of kubernetes(The latest version of kubernetes during our research). In addition, we have also conducted a complete experiment on versions v1.29.2, v1.30.2 and v1.31.2 of kubernetes, and the specific data results are stored in the `/ImplicitPermission/Multi_version` directory. Its directory structure is consistent with the organization of the project root directory (v1.30.10 version data).
 
 # Ablation
 
 We further evaluated the contributions of each component through an ablation study, which confirms the complementary roles of LLM-based reasoning and static analysis. The specific data is stored in the `/ImplicitPermission/Ablation` directory.
+
+The specific question-and-answer dialogues are stored in`/ImplicitPermission/Ablation/[version]/~_Q&A`.
+
+The evaluation results of various ablation experiments are stored in `/ImplicitPermission/Ablation/[version]/assessment/`. Among them, **allRef.txt** contains all mapping results, while **trigger.txt** contains the results of actual dynamic triggers. 
