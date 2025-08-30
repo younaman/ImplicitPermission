@@ -1,6 +1,6 @@
 # ImplicitPermission Analysis
 
-This is a toolkit for analyzing implicit permissions in kubernetes.
+This is a toolkit for analyzing implicit permissions in kubernetes. This artifact is intended solely for security analysis and research. It does not include exploit code designed to defeat or bypass security systems
 
 In  our approach, there are three parts, namely Resource Identification, Explicit Permission Analysis and Implicit Permission Analysis.
 
